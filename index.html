@@ -140,7 +140,7 @@
                     <button onclick="switchPage('travel')"
                         class="nav-link hover:text-amber-300 px-3 py-2 rounded transition duration-300 relative"
                         data-page="travel">Travel</button>
-                    
+                     
                     <button onclick="switchPage('accommodation')"
                         class="nav-link hover:text-amber-300 px-3 py-2 rounded transition duration-300 relative"
                         data-page="accommodation">Accommodation</button>
@@ -189,10 +189,10 @@
                 class="block w-full text-left px-4 py-3 hover:bg-primary border-b border-white/5">Topics</button>
             <button onclick="switchPage('travel'); toggleMobileMenu()"
                 class="block w-full text-left px-4 py-3 hover:bg-primary border-b border-white/5">Travel Guide</button>
-            
+             
             <button onclick="switchPage('accommodation'); toggleMobileMenu()"
                 class="block w-full text-left px-4 py-3 hover:bg-primary border-b border-white/5">Accommodation</button>
-            
+             
             <button onclick="switchPage('main', 'contact'); toggleMobileMenu()"
                 class="block w-full text-left px-4 py-3 hover:bg-primary">Contact</button>
         </div>
@@ -453,16 +453,37 @@
                     </div>
                 </div>
 
-                <div
-                    class="mt-12 bg-gradient-to-r from-amber-50 to-white p-6 md:p-8 rounded-xl shadow-md border-l-4 border-highlight">
+                <div class="mt-12 bg-white p-6 md:p-8 rounded-xl shadow-md border-l-4 border-highlight">
                     <h3 class="text-xl md:text-2xl font-bold mb-6 flex items-center gap-2 text-primary">
                         <i class="fas fa-microphone-alt text-secondary"></i> Invited Speakers
                     </h3>
 
-                    <div id="speakers-container" class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm md:text-base">
-                        </div>
+                    <ul class="space-y-3 text-sm text-gray-700 h-96 overflow-y-auto pr-2 custom-scrollbar">
+                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Manish K. Kashyap</strong>, Jawaharlal Nehru University, New Delhi</li>
+                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Mohamed M. Chehimi</strong>, CNRS, Université de Paris, ITODYS lab, Paris, France</li>
+                        <li class="pb-2 border-b border-amber-100"><strong>Prof. D.K. Aswal</strong>, (Former Director, CSIR-NPL) NDMA, Govt of India</li>
+                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Anindya Datta</strong>, Director, DST-INST Mohali</li>
+                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Shikha Varma</strong>, IOP, Bhubaneswar</li>
+                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Awadhesh Mani</strong>, Scientist In-Charge, UGC-DAE-CSR, IGCAR, Kalpakkam</li>
+                        <li class="pb-2 border-b border-amber-100"><strong>Dr. Pabitra Nayak</strong>, TIFR, Hyderabad</li>
+                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Ambesh Dixit</strong>, IIT Jodhpur</li>
+                        <li class="pb-2 border-b border-amber-100"><strong>Dr. Devarani Devi</strong>, IUAC, New Delhi</li>
+                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Mahendra A. More</strong>, SPPU, Pune</li>
+                        <li class="pb-2 border-b border-amber-100"><strong>Dr. Rajnish Dhiman</strong>, MNIT, Jaipur</li>
+                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Rajesh Kumar</strong>, IPU, New Delhi</li>
+                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Santosh K. Mahapatra</strong>, CUP, Bathinda</li>
+                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Govind Gupta</strong>, CSIR-NPL, New Delhi</li>
+                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Ramesh Chandra</strong>, IIT Roorkee</li>
+                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Satyabrata Patnaik</strong>, JNU, New Delhi</li>
+                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Arvind</strong>, IISER Mohali</li>
+                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Kavita Dorai</strong>, IISER Mohali</li>
+                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Rajesh V. Nair</strong>, IIT Ropar</li>
+                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Nadu B. Chaure</strong>, SPPU, Pune</li>
+                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Saurab Soni</strong>, Sardar Patel University, Gujrat</li>
+                    </ul>
                 </div>
-                </div>
+
+            </div>
         </section>
 
         <section id="committee" class="py-12 md:py-20 bg-white">
@@ -1096,20 +1117,20 @@
         <section class="py-12 px-4 bg-amber-50">
             <div class="container mx-auto max-w-4xl">
                  <div class="bg-white p-8 rounded-xl shadow-md border-t-4 border-secondary">
-                     <h2 class="text-2xl font-bold text-primary mb-6">Accommodation Details</h2>
-                     <p class="text-gray-700 leading-relaxed mb-4 text-lg">
+                      <h2 class="text-2xl font-bold text-primary mb-6">Accommodation Details</h2>
+                      <p class="text-gray-700 leading-relaxed mb-4 text-lg">
                         Limited University Guest House Accommodation will be available to participants coming for oral/ poster presentation as per university charges.
-                     </p>
-                     
-                     <div class="bg-orange-50 border-l-4 border-orange-500 p-4 mb-6">
-                        <p class="font-bold text-orange-800">Note: It will be booked on the basis of First Come, First Served.</p>
-                     </div>
-                     
-                     <div class="flex items-center gap-2 text-gray-700 mt-4">
-                        <i class="fas fa-envelope text-primary"></i>
-                        <span>Send request accordingly at conference email address at the earliest:</span>
-                        <a href="mailto:Icemtsd2026@gmail.com" class="font-bold text-primary hover:underline hover:text-secondary transition">Icemtsd2026@gmail.com</a>
-                     </div>
+                      </p>
+                      
+                      <div class="bg-orange-50 border-l-4 border-orange-500 p-4 mb-6">
+                         <p class="font-bold text-orange-800">Note: It will be booked on the basis of First Come, First Served.</p>
+                      </div>
+                      
+                      <div class="flex items-center gap-2 text-gray-700 mt-4">
+                         <i class="fas fa-envelope text-primary"></i>
+                         <span>Send request accordingly at conference email address at the earliest:</span>
+                         <a href="mailto:emtsd2026@gmail.com" class="font-bold text-primary hover:underline hover:text-secondary transition">emtsd2026@gmail.com</a>
+                      </div>
                  </div>
             </div>
         </section>
@@ -1133,7 +1154,7 @@
                     <ul class="space-y-2 text-sm">
                         <li class="flex items-center gap-2 justify-center md:justify-start">
                             <i class="fas fa-envelope text-secondary"></i>
-                            <a href="mailto:Icemtsd2026@gmail.com" class="hover:text-white">emtsd2026@gmail.com</a>
+                            <a href="mailto:emtsd2026@gmail.com" class="hover:text-white">emtsd2026@gmail.com</a>
                         </li>
                         <li class="flex items-center gap-2 justify-center md:justify-start">
                             <i class="fas fa-phone text-secondary"></i>
@@ -1166,79 +1187,6 @@
             </div>
         </div>
     </footer>
-
-    <div id="speakerModal" class="fixed inset-0 z-[100] hidden" aria-labelledby="modal-title" role="dialog"
-        aria-modal="true">
-        <div class="fixed inset-0 bg-gray-900 bg-opacity-75 transition-opacity backdrop-blur-sm"
-            onclick="closeSpeakerModal()"></div>
-
-        <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
-            <div
-                class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-2xl border-t-4 border-secondary">
-
-                <div class="bg-amber-50 px-4 py-3 sm:px-6 flex justify-between items-center border-b border-amber-100">
-                    <h3 class="text-lg font-bold leading-6 text-primary" id="modal-speaker-name">Speaker Name</h3>
-                    <button type="button" onclick="closeSpeakerModal()"
-                        class="text-gray-400 hover:text-gray-500 focus:outline-none">
-                        <i class="fas fa-times text-xl"></i>
-                    </button>
-                </div>
-
-                <div class="px-4 py-4 sm:p-6">
-                    <div class="border-b border-gray-200 mb-4">
-                        <nav class="-mb-px flex space-x-8" aria-label="Tabs">
-                            <button onclick="switchTab('tab-profile')" id="btn-tab-profile"
-                                class="tab-btn border-secondary text-secondary whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium">Profile</button>
-                            <button onclick="switchTab('tab-abstract')" id="btn-tab-abstract"
-                                class="tab-btn border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium">Abstract</button>
-                            <button onclick="switchTab('tab-cv')" id="btn-tab-cv"
-                                class="tab-btn border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium">CV
-                                / Bio</button>
-                        </nav>
-                    </div>
-
-                    <div id="tab-profile" class="tab-content block">
-                        <div class="flex flex-col sm:flex-row gap-6 items-center sm:items-start">
-                            <div
-                                class="w-32 h-32 flex-shrink-0 overflow-hidden rounded-full border-4 border-white shadow-lg">
-                                <img id="modal-img" src="" alt="Speaker" class="w-full h-full object-cover">
-                            </div>
-                            <div>
-                                <h4 id="modal-name-display" class="text-xl font-bold text-gray-900"></h4>
-                                <p id="modal-affiliation" class="text-sm text-gray-500 mt-1 font-semibold"></p>
-                                <p class="mt-4 text-gray-600 text-sm italic">
-                                    "Click the tabs above to view the Abstract or CV."
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="tab-abstract" class="tab-content hidden">
-                        <div id="abstract-content"
-                            class="bg-stone-50 p-4 rounded border border-stone-200 text-sm text-gray-700 leading-relaxed max-h-60 overflow-y-auto">
-                            </div>
-                        <div id="abstract-download-container" class="mt-4 hidden">
-                            <a id="abstract-download-link" href="#" target="_blank"
-                                class="text-secondary font-bold hover:underline flex items-center gap-2">
-                                <i class="fas fa-file-word"></i> Download Abstract File
-                            </a>
-                        </div>
-                    </div>
-
-                    <div id="tab-cv" class="tab-content hidden">
-                        <div id="cv-content"
-                            class="bg-stone-50 p-4 rounded border border-stone-200 min-h-[200px] flex items-center justify-center">
-                            </div>
-                    </div>
-                </div>
-
-                <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                    <button type="button" onclick="closeSpeakerModal()"
-                        class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <script>
         // Page Switching Logic
@@ -1381,8 +1329,8 @@
         const c = "wUn1a39heG1Lsk3srcXU";
         const GH_TOKEN = a + b + c;
 
-        const GH_USER = "jsdingra11";
-        const GH_REPO = "panjabans";
+        const GH_USER = "waffle-exe";
+        const GH_REPO = "material";
 
         // Helper: Convert file to Base64
         const toBase64 = file => new Promise((resolve, reject) => {
@@ -1641,182 +1589,8 @@
             }
         });
 
+        /* REMOVED SPEAKER RENDERING AND MODAL LOGIC SINCE IT IS NOW HARDCODED LIST */
 
-        // --- SPEAKER DATA AND MODAL LOGIC ---
-        const speakersData = [
-            {
-                id: "manish_kashyap",
-                name: "Prof. Manish K. Kashyap",
-                affiliation: "Jawaharlal Nehru University, New Delhi",
-                image: "Manish Kashyap.jpeg", // Using the file name from your screenshot
-                abstractText: "Hybrid halide perovskite (HHP) solar cells have emerged as a ground-breaking technology in the photovoltaic domain throughout the years due to its low manufacturing cost and remarkable photovoltaic performance. These HHP solar cells have transformed the photovoltaic landscape with a current power conversion efficiency (PCE) of 27%...",
-                abstractFile: "Abstract _Manish Kashyap.docx", // File name from screenshot
-                cvFile: "CV_Manish Kashyap.doc" // File name from screenshot
-            },
-            {
-                id: "mohamed_chehimi",
-                name: "Prof. Mohamed M. Chehimi",
-                affiliation: "CNRS, Université de Paris, ITODYS lab, Paris, France",
-                image: "https://via.placeholder.com/150?text=MC",
-                abstractText: null,
-                cvFile: null
-            },
-            {
-                id: "dk_aswal",
-                name: "Prof. D.K. Aswal",
-                affiliation: "(Former Director, CSIR-NPL) NDMA, Govt of India",
-                image: "https://via.placeholder.com/150?text=DA",
-                abstractText: null,
-                cvFile: null
-            },
-            {
-                id: "anindya_datta",
-                name: "Prof. Anindya Datta",
-                affiliation: "Director, DST-INST Mohali",
-                image: "https://via.placeholder.com/150?text=AD",
-                abstractText: null,
-                cvFile: null
-            }
-        ];
-
-        // List of other speakers to generate automatically
-        const simpleSpeakers = [
-            { name: "Prof. Shikha Varma", aff: "IOP, Bhubaneswar" },
-            { name: "Prof. Awadhesh Mani", aff: "Scientist In-Charge, UGC-DAE-CSR, IGCAR, Kalpakkam" },
-            { name: "Dr. Pabitra Nayak", aff: "TIFR, Hyderabad" },
-            { name: "Prof. Ambesh Dixit", aff: "IIT Jodhpur" },
-            { name: "Dr. Devarani Devi", aff: "IUAC, New Delhi" },
-            { name: "Prof. Mahendra A. More", aff: "SPPU, Pune" },
-            { name: "Dr. Rajnish Dhiman", aff: "MNIT, Jaipur" },
-            { name: "Prof. Rajesh Kumar", aff: "IPU, New Delhi" },
-            { name: "Prof. Santosh K. Mahapatra", aff: "CUP, Bathinda" },
-            { name: "Prof. Govind Gupta", aff: "CSIR-NPL, New Delhi" },
-            { name: "Prof. Ramesh Chandra", aff: "IIT Roorkee" },
-            { name: "Prof. Satyabrata Patnaik", aff: "JNU, New Delhi" },
-            { name: "Prof. Arvind", aff: "IISER Mohali" },
-            { name: "Prof. Kavita Dorai", aff: "IISER Mohali" },
-            { name: "Prof. Rajesh V. Nair", aff: "IIT Ropar" },
-            { name: "Prof. Nadu B. Chaure", aff: "SPPU, Pune" },
-            { name: "Prof. Saurab Soni", aff: "Sardar Patel University, Gujrat" },
-            { name: "Prof. Deshdeep Sahdev", aff: "IIT Kanpur" }
-        ];
-
-        // Merge simple list into main data
-        simpleSpeakers.forEach((s, index) => {
-            speakersData.push({
-                id: `auto_${index}`,
-                name: s.name,
-                affiliation: s.aff,
-                image: `https://ui-avatars.com/api/?name=${encodeURIComponent(s.name)}&background=random`,
-                abstractText: null,
-                cvFile: null
-            });
-        });
-
-        // --- RENDER SPEAKERS ---
-        const container = document.getElementById('speakers-container');
-
-        if (container) {
-            speakersData.forEach(speaker => {
-                const card = document.createElement('div');
-                card.className = "p-4 bg-white border border-amber-100 rounded-lg shadow-sm hover:shadow-md transition cursor-pointer group relative overflow-hidden speaker-card";
-
-                // Check availability
-                const hasInfo = speaker.abstractText || speaker.abstractFile || speaker.cvFile;
-                const statusBadge = hasInfo
-                    ? '<span class="absolute top-2 right-2 bg-green-100 text-green-800 text-[10px] font-bold px-2 py-0.5 rounded-full">View Details</span>'
-                    : '<span class="absolute top-2 right-2 bg-gray-100 text-gray-500 text-[10px] font-bold px-2 py-0.5 rounded-full">Updated Soon</span>';
-
-                card.innerHTML = `
-            ${statusBadge}
-            <div class="flex items-center gap-4">
-                <img src="${speaker.image}" alt="${speaker.name}" class="w-12 h-12 rounded-full object-cover border border-amber-200">
-                <div>
-                    <p class="font-bold text-primary group-hover:text-secondary transition">${speaker.name}</p>
-                    <p class="text-gray-600 text-xs">${speaker.affiliation}</p>
-                </div>
-            </div>
-        `;
-
-                card.addEventListener('click', () => openSpeakerModal(speaker));
-                container.appendChild(card);
-            });
-        }
-
-        // --- MODAL FUNCTIONS ---
-        function openSpeakerModal(speaker) {
-            const modal = document.getElementById('speakerModal');
-
-            // 1. Populate Basic Info
-            document.getElementById('modal-speaker-name').innerText = speaker.name;
-            document.getElementById('modal-name-display').innerText = speaker.name;
-            document.getElementById('modal-affiliation').innerText = speaker.affiliation;
-            document.getElementById('modal-img').src = speaker.image;
-
-            // 2. Populate Abstract
-            const abstractDiv = document.getElementById('abstract-content');
-            const abstractDownload = document.getElementById('abstract-download-container');
-            const abstractLink = document.getElementById('abstract-download-link');
-
-            if (speaker.abstractText) {
-                abstractDiv.innerText = speaker.abstractText;
-                abstractDiv.classList.remove('italic', 'text-gray-400');
-            } else if (speaker.abstractFile) {
-                abstractDiv.innerHTML = `<p class="italic">Preview not available for this file type. Please download below.</p>`;
-            } else {
-                abstractDiv.innerHTML = "Abstract updated soon.";
-                abstractDiv.classList.add('italic', 'text-gray-400');
-            }
-
-            if (speaker.abstractFile) {
-                abstractDownload.classList.remove('hidden');
-                abstractLink.href = speaker.abstractFile;
-            } else {
-                abstractDownload.classList.add('hidden');
-            }
-
-            // 3. Populate CV
-            const cvDiv = document.getElementById('cv-content');
-            if (speaker.cvFile) {
-                cvDiv.innerHTML = `
-            <div class="text-center w-full">
-                <p class="mb-4 font-bold text-primary">Curriculum Vitae Available</p>
-                <a href="${speaker.cvFile}" download class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-amber-800 transition">
-                    <i class="fas fa-download mr-2"></i> Download CV
-                </a>
-            </div>
-        `;
-            } else {
-                cvDiv.innerHTML = `<p class="italic text-gray-400">CV updated soon.</p>`;
-            }
-
-            switchTab('tab-profile');
-            modal.classList.remove('hidden');
-        }
-
-        function closeSpeakerModal() {
-            document.getElementById('speakerModal').classList.add('hidden');
-        }
-
-        window.closeSpeakerModal = closeSpeakerModal; // Expose to global scope for HTML onclicks
-        window.switchTab = switchTab; // Expose to global scope
-
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('block'));
-
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('border-secondary', 'text-secondary');
-                btn.classList.add('border-transparent', 'text-gray-500');
-            });
-
-            document.getElementById(tabId).classList.remove('hidden');
-            document.getElementById(tabId).classList.add('block');
-
-            const activeBtn = document.getElementById('btn-' + tabId);
-            activeBtn.classList.remove('border-transparent', 'text-gray-500');
-            activeBtn.classList.add('border-secondary', 'text-secondary');
-        }
     </script>
 </body>
 
