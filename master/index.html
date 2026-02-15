@@ -481,6 +481,9 @@
         // 5a. Abstract Card
         function createAbstractCard(id, data, missingCount) {
             const name = smartFind(data, ['fullName', 'name', 'Name', 'username']);
+            // --- NEW: FETCH AUTHORS ---
+            const allAuthors = smartFind(data, ['allAuthors', 'authors', 'Authors']);
+            // --------------------------
             const title = smartFind(data, ['paperTitle', 'title', 'Title']);
             const abstract = smartFind(data, ['abstractText', 'abstract', 'Abstract']);
             const email = smartFind(data, ['email', 'Email']);
@@ -585,6 +588,10 @@
                 </div>
                 <div class="p-5 flex-grow space-y-4">
                     <div class="grid grid-cols-1 gap-2 text-sm text-gray-600">
+                        <div class="mb-2">
+                            <span class="text-[10px] font-bold text-gray-400 uppercase">Authors</span>
+                            <p class="text-xs text-gray-700 leading-snug">${allAuthors || dispName}</p>
+                        </div>
                         <div class="flex items-center gap-2 truncate">
                             <i class="fas fa-envelope text-blue-400 w-5"></i>
                             <span class="select-all">${email || 'No Email'}</span>
@@ -705,9 +712,12 @@
             const safe = (str) => `"${(str || "").replace(/"/g, '""')}"`;
 
             if (currentView === 'abstracts') {
-                csvContent += "Abstract ID,Status,Full Name,Email,Phone,Affiliation,Paper Title,Abstract Text,File URL\n";
+                // ADDED 'All Authors' column to CSV
+                csvContent += "Abstract ID,Status,Submitter Name,All Authors,Email,Phone,Affiliation,Paper Title,Abstract Text,File URL\n";
                 globalDataCache.forEach(([key, val]) => {
                     const name = smartFind(val, ['fullName', 'name', 'Name']);
+                    // Fetch Authors for CSV
+                    const allAuthors = smartFind(val, ['allAuthors', 'authors', 'Authors']) || "";
                     const title = smartFind(val, ['paperTitle', 'title', 'Title']);
                     const abstract = smartFind(val, ['abstractText', 'abstract', 'Abstract']);
                     const email = smartFind(val, ['email', 'Email']);
@@ -717,7 +727,7 @@
                     const id = smartFind(val, ['abstractId', 'id']) || "N/A";
                     const status = smartFind(val, ['status', 'Status']) || "pending";
 
-                    csvContent += [id, status, safe(name), safe(email), safe(phone), safe(aff), safe(title), safe(abstract), safe(file)].join(",") + "\n";
+                    csvContent += [id, status, safe(name), safe(allAuthors), safe(email), safe(phone), safe(aff), safe(title), safe(abstract), safe(file)].join(",") + "\n";
                 });
             } else {
                 csvContent += "Type,Full Name,Email,Phone,Affiliation,Designation\n";
