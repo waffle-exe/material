@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel | IC-EMTSD-2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1e3a8a',
+                        secondary: '#3b82f6',
+                        success: '#10b981',
+                        danger: '#ef4444',
+                        warning: '#f59e0b'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        .login-bg {
+            background-image: linear-gradient(rgba(30, 58, 138, 0.95), rgba(23, 37, 84, 0.9)), url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRGYw1rWJqyjVLzGctWiub4rYpb3rHnj4uMGQ&s');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .tab-active {
+            background-color: #1e3a8a;
+            color: white;
+            border-color: #1e3a8a;
+        }
+
+        .tab-inactive {
+            background-color: white;
+            color: #64748b;
+            border-color: #e2e8f0;
+        }
+        
+        @keyframes spin-slow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .animate-spin-slow {
+            animation: spin-slow 1s linear infinite;
+        }
+    </style>
+</head>
+
+<body class="text-gray-800">
+
+    <div id="loginSection" class="fixed inset-0 z-50 flex items-center justify-center login-bg">
+        <div class="bg-white p-10 rounded-2xl shadow-2xl max-w-md w-full mx-4 border border-slate-200">
+            <div class="text-center mb-8">
+                <div
+                    class="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-blue-100">
+                    <i class="fas fa-shield-alt text-3xl text-primary"></i>
+                </div>
+                <h2 class="text-3xl font-bold text-gray-800 tracking-tight">Admin Portal</h2>
+                <p class="text-gray-500 mt-2 text-sm">IC-EMTSD-2026 Database</p>
+            </div>
+
+            <form id="loginForm" class="space-y-6">
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-2 tracking-wider">Access
+                        Key</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-4">
+                            <i class="fas fa-lock text-gray-400"></i>
+                        </span>
+                        <input type="password" id="passwordInput"
+                            class="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-300 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition bg-slate-50"
+                            placeholder="Enter password">
+                    </div>
+                </div>
+                <button type="submit"
+                    class="w-full bg-primary text-white font-bold py-3.5 rounded-xl hover:bg-blue-900 transition shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                    Login to Dashboard
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div id="dashboardSection" class="hidden min-h-screen flex flex-col">
+
+        <nav class="bg-white border-b border-gray-200 sticky top-0 z-40 shadow-sm backdrop-blur-md bg-opacity-90">
+            <div
+                class="container mx-auto px-4 md:px-6 py-3 flex flex-col md:flex-row justify-between items-center gap-4">
+                <div class="flex items-center gap-4">
+                    <div
+                        class="h-10 w-10 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center text-white font-bold shadow-md">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-gray-800 leading-none">Admin Console</h1>
+                        <span class="text-xs text-gray-500 font-medium" id="pageTitle">Manage Abstracts</span>
+                    </div>
+                </div>
+
+                <div class="flex bg-slate-100 p-1 rounded-lg border border-slate-200">
+                    <button onclick="switchView('abstracts')" id="btnAbstracts"
+                        class="px-4 py-1.5 rounded-md text-sm font-bold transition shadow-sm tab-active flex items-center gap-2">
+                        <i class="fas fa-file-alt"></i> Abstracts
+                    </button>
+                    <button onclick="switchView('registrations')" id="btnRegistrations"
+                        class="px-4 py-1.5 rounded-md text-sm font-bold transition flex items-center gap-2 tab-inactive">
+                        <i class="fas fa-users"></i> Registrations
+                    </button>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <button onclick="fetchData()" id="refreshBtn"
+                        class="bg-blue-50 text-blue-600 px-3 py-2 rounded-lg font-bold text-sm hover:bg-blue-100 transition border border-blue-200 flex items-center gap-2">
+                        <i class="fas fa-sync-alt" id="refreshIcon"></i> Refresh
+                    </button>
+
+                    <button onclick="downloadCSV()"
+                        class="bg-green-600 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-green-700 transition flex items-center gap-2 shadow-sm">
+                        <i class="fas fa-file-csv"></i> Export Data
+                    </button>
+
+                    <button onclick="copyAllEmails()"
+                        class="bg-indigo-50 text-indigo-600 px-4 py-2 rounded-lg font-bold text-sm hover:bg-indigo-100 transition border border-indigo-200 flex items-center gap-2">
+                        <i class="fas fa-copy"></i> Emails
+                    </button>
+
+                    <div class="bg-gray-100 px-4 py-2 rounded-lg text-sm font-bold text-gray-600 border border-gray-200">
+                        Total: <span id="totalCount" class="text-primary">0</span>
+                    </div>
+
+                    <button onclick="logout()"
+                        class="text-gray-400 hover:text-red-500 transition p-2 rounded-full hover:bg-red-50"
+                        title="Logout">
+                        <i class="fas fa-power-off text-lg"></i>
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <main class="flex-grow container mx-auto px-4 md:px-6 py-8">
+
+            <div id="loader" class="flex flex-col items-center justify-center py-20">
+                <i class="fas fa-circle-notch fa-spin text-4xl text-secondary mb-4"></i>
+                <p class="text-gray-500 font-medium animate-pulse">Syncing Database...</p>
+            </div>
+
+            <div id="emptyState" class="hidden flex flex-col items-center justify-center py-20 text-center">
+                <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                    <i class="fas fa-inbox text-3xl text-gray-400"></i>
+                </div>
+                <h3 class="text-lg font-bold text-gray-600">No Data</h3>
+                <p class="text-gray-400 text-sm">No entries found in this category.</p>
+            </div>
+
+            <div id="mainContainer" class="hidden space-y-8">
+                <div id="acceptedSection" class="hidden">
+                    <div class="flex items-center gap-3 mb-4 border-b border-gray-200 pb-2">
+                        <div class="bg-green-100 p-2 rounded-lg text-green-700">
+                            <i class="fas fa-check-double text-xl"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-gray-800">Accepted Abstracts</h2>
+                        <span class="bg-gray-100 text-gray-600 px-2 py-0.5 rounded text-sm font-bold"
+                            id="acceptedCount">0</span>
+                    </div>
+                    <div id="acceptedGrid" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6"></div>
+                </div>
+
+                <div id="regularSection">
+                    <div id="pendingHeader" class="hidden flex items-center gap-3 mb-4 border-b border-gray-200 pb-2">
+                        <div class="bg-yellow-100 p-2 rounded-lg text-yellow-700">
+                            <i class="fas fa-hourglass-half text-xl"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-gray-800">Applications Queue</h2>
+                        <span class="bg-gray-100 text-gray-600 px-2 py-0.5 rounded text-sm font-bold"
+                            id="pendingCount">0</span>
+                    </div>
+                    <div id="cardGrid" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6"></div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <div id="previewModal" class="fixed inset-0 z-[60] hidden" aria-labelledby="modal-title" role="dialog"
+        aria-modal="true">
+        <div class="fixed inset-0 bg-gray-900 bg-opacity-75 transition-opacity backdrop-blur-sm"
+            onclick="closePreview()"></div>
+        <div class="fixed inset-0 z-10 overflow-y-auto">
+            <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                <div
+                    class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-4xl h-[85vh] flex flex-col">
+                    <div class="bg-gray-50 px-4 py-3 flex justify-between items-center border-b border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                            <i class="fas fa-eye text-primary"></i> Document Preview
+                        </h3>
+                        <div class="flex items-center gap-2">
+                            <a id="downloadBtn" href="#" target="_blank"
+                                class="text-sm bg-primary text-white px-3 py-1.5 rounded hover:bg-blue-900 transition">
+                                <i class="fas fa-download"></i> Download
+                            </a>
+                            <button type="button" onclick="closePreview()"
+                                class="text-gray-400 hover:text-red-500 transition">
+                                <i class="fas fa-times text-xl"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="flex-grow bg-gray-200 relative">
+                        <div id="previewLoader" class="absolute inset-0 flex items-center justify-center">
+                            <i class="fas fa-spinner fa-spin text-3xl text-gray-400"></i>
+                        </div>
+                        <iframe id="docFrame" class="w-full h-full" frameborder="0"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="debugModal" class="fixed inset-0 z-[70] hidden" role="dialog" aria-modal="true">
+        <div class="fixed inset-0 bg-gray-900 bg-opacity-80 transition-opacity" onclick="closeDebug()"></div>
+        <div class="fixed inset-0 z-10 overflow-y-auto">
+            <div class="flex min-h-full items-center justify-center p-4">
+                <div class="bg-white rounded-lg shadow-2xl w-full max-w-2xl p-6 relative">
+                    <button onclick="closeDebug()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                    <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                        <i class="fas fa-bug text-red-500"></i> Raw Database Entry
+                    </h3>
+                    <p class="text-sm text-gray-500 mb-4">This is the exact data stored in Firebase for this entry. Use the keys shown here to verify what is missing.</p>
+                    <pre id="debugContent" class="bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto text-xs font-mono"></pre>
+                    <div class="mt-4 flex justify-end">
+                        <button onclick="closeDebug()" class="bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300 font-bold text-sm">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, get, child, update, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+        // 1. Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyB4eoofAdY4DrW-VKvfGJl5aNv2hoCTn4c",
+            authDomain: "iist-fd6e8.firebaseapp.com",
+            databaseURL: "https://iist-fd6e8-default-rtdb.firebaseio.com",
+            projectId: "iist-fd6e8",
+            storageBucket: "iist-fd6e8.firebasestorage.app",
+            messagingSenderId: "692699808449",
+            appId: "1:692699808449:web:120c8941a940d071f24a40",
+            measurementId: "G-GPFG8LWF2H"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // State Management
+        let acceptedEmailsList = [];
+        let globalDataCache = []; 
+        let currentView = 'abstracts'; 
+
+        // 2. Auth Logic
+        const loginForm = document.getElementById('loginForm');
+        const loginSection = document.getElementById('loginSection');
+        const dashboardSection = document.getElementById('dashboardSection');
+
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const password = document.getElementById('passwordInput').value;
+            if (password === "gndu26") {
+                loginSection.classList.add('hidden');
+                dashboardSection.classList.remove('hidden');
+                fetchData();
+            } else {
+                showToast("Access Denied: Incorrect Password", "error");
+                document.getElementById('passwordInput').value = '';
+            }
+        });
+
+        window.logout = function () {
+            if (confirm("Logout from admin panel?")) location.reload();
+        }
+
+        // 3. View Switcher
+        window.switchView = function (view) {
+            currentView = view;
+            const btnAbs = document.getElementById('btnAbstracts');
+            const btnReg = document.getElementById('btnRegistrations');
+
+            if (view === 'abstracts') {
+                btnAbs.className = "px-4 py-1.5 rounded-md text-sm font-bold transition shadow-sm flex items-center gap-2 tab-active";
+                btnReg.className = "px-4 py-1.5 rounded-md text-sm font-bold transition flex items-center gap-2 tab-inactive";
+                document.getElementById('pageTitle').innerText = "Manage Abstracts";
+            } else {
+                btnReg.className = "px-4 py-1.5 rounded-md text-sm font-bold transition shadow-sm flex items-center gap-2 tab-active";
+                btnAbs.className = "px-4 py-1.5 rounded-md text-sm font-bold transition flex items-center gap-2 tab-inactive";
+                document.getElementById('pageTitle').innerText = "General Registrations";
+            }
+            fetchData();
+        }
+
+        // 4. Fetch Data with Robust Search & Filters
+        async function fetchData() {
+            // UI Spinning for Refresh
+            const refreshIcon = document.getElementById('refreshIcon');
+            refreshIcon.classList.add('animate-spin-slow');
+
+            const loader = document.getElementById('loader');
+            const mainContainer = document.getElementById('mainContainer');
+            const empty = document.getElementById('emptyState');
+            const acceptedSection = document.getElementById('acceptedSection');
+            const acceptedGrid = document.getElementById('acceptedGrid');
+            const regularGrid = document.getElementById('cardGrid');
+            const pendingHeader = document.getElementById('pendingHeader');
+            const totalCount = document.getElementById('totalCount');
+            const acceptedCountEl = document.getElementById('acceptedCount');
+            const pendingCountEl = document.getElementById('pendingCount');
+
+            // Reset UI
+            mainContainer.classList.add('hidden');
+            empty.classList.add('hidden');
+            acceptedSection.classList.add('hidden');
+            pendingHeader.classList.add('hidden');
+            if (!mainContainer.classList.contains('hidden')) loader.classList.remove('hidden'); // Show loader if first load
+
+            acceptedGrid.innerHTML = "";
+            regularGrid.innerHTML = "";
+            acceptedEmailsList = [];
+            globalDataCache = [];
+
+            try {
+                const dbRef = ref(db);
+                const nodeName = currentView === 'abstracts' ? 'registrations' : 'conference_registrations';
+                const snapshot = await get(child(dbRef, nodeName));
+
+                loader.classList.add('hidden');
+                refreshIcon.classList.remove('animate-spin-slow'); // Stop spin
+
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    let entries = Object.entries(data);
+
+                    // --- FILTERING LOGIC ---
+                    let validEntries = [];
+                    entries.forEach(([key, val]) => {
+                        // 1. Check Essential Info
+                        const name = smartFind(val, ['fullName', 'name', 'Name']);
+                        const email = smartFind(val, ['email', 'Email']);
+                        const hasEssential = (name && email);
+
+                        // 2. Count Missing Fields
+                        let missingCount = 0;
+                        if (!name) missingCount++;
+                        if (!email) missingCount++;
+                        if (!smartFind(val, ['phone', 'Phone'])) missingCount++;
+                        if (!smartFind(val, ['affiliation', 'Affiliation'])) missingCount++;
+                        
+                        if (currentView === 'abstracts') {
+                            if (!smartFind(val, ['paperTitle', 'title'])) missingCount++;
+                            if (!smartFind(val, ['abstractText', 'abstract'])) missingCount++;
+                        }
+
+                        // 3. Hide Rule: If >3 missing AND doesn't have essential Name+Email
+                        //    (If it HAS Name+Email, we keep it even if other stuff is missing)
+                        if (missingCount > 3 && !hasEssential) {
+                            return; // Skip this entry (Hide)
+                        }
+
+                        validEntries.push([key, val, missingCount]);
+                    });
+
+                    globalDataCache = validEntries.map(e => [e[0], e[1]]);
+                    totalCount.innerText = validEntries.length;
+
+                    if (validEntries.length > 0) {
+                        mainContainer.classList.remove('hidden');
+
+                        if (currentView === 'abstracts') {
+                            // Find Status Key (also flexible)
+                            const findStatus = (v) => smartFind(v, ['status', 'Status', 'state']) || 'pending';
+
+                            const acceptedEntries = validEntries.filter(([k, v]) => findStatus(v) === 'accepted');
+                            const otherEntries = validEntries.filter(([k, v]) => findStatus(v) !== 'accepted');
+
+                            // Sort
+                            const getId = (v) => {
+                                const id = smartFind(v, ['abstractId', 'id', 'ID']) || "A0";
+                                return parseInt(id.replace(/[^0-9]/g, '')) || 0;
+                            };
+                            acceptedEntries.sort((a, b) => getId(b[1]) - getId(a[1]));
+
+                            // Render Accepted
+                            if (acceptedEntries.length > 0) {
+                                acceptedSection.classList.remove('hidden');
+                                acceptedCountEl.innerText = acceptedEntries.length;
+                                acceptedEntries.forEach(([key, val, missingCount]) => {
+                                    const email = smartFind(val, ['email', 'Email']);
+                                    if(email) acceptedEmailsList.push(email);
+                                    acceptedGrid.innerHTML += createAbstractCard(key, val, missingCount);
+                                });
+                            }
+
+                            // Render Others
+                            if (otherEntries.length > 0) {
+                                pendingHeader.classList.remove('hidden');
+                                pendingCountEl.innerText = otherEntries.length;
+                                otherEntries.reverse().forEach(([key, val, missingCount]) => {
+                                    regularGrid.innerHTML += createAbstractCard(key, val, missingCount);
+                                });
+                            }
+                            if (acceptedEntries.length === 0) acceptedSection.classList.add('hidden');
+
+                        } else {
+                            // Registrations View
+                            acceptedSection.classList.add('hidden');
+                            pendingHeader.classList.add('hidden');
+                            validEntries.reverse().forEach(([key, val, missingCount]) => {
+                                const email = smartFind(val, ['email', 'Email']);
+                                if(email) acceptedEmailsList.push(email);
+                                regularGrid.innerHTML += createRegistrationCard(key, val, missingCount);
+                            });
+                        }
+                    } else {
+                        empty.classList.remove('hidden');
+                    }
+                } else {
+                    empty.classList.remove('hidden');
+                    totalCount.innerText = "0";
+                }
+            } catch (error) {
+                loader.classList.add('hidden');
+                refreshIcon.classList.remove('animate-spin-slow');
+                showToast("Database Connection Failed", "error");
+                console.error(error);
+            }
+        }
+
+        // --- SMART SEARCH ENGINE ---
+        function smartFind(data, candidates) {
+            if (!data) return null;
+            const keys = Object.keys(data);
+            const lowerKeys = keys.map(k => k.toLowerCase());
+            
+            for (let candidate of candidates) {
+                if (data[candidate] && data[candidate] !== 'undefined' && data[candidate] !== 'null') return data[candidate];
+                const index = lowerKeys.indexOf(candidate.toLowerCase());
+                if (index !== -1) {
+                    const realKey = keys[index];
+                    if (data[realKey] && data[realKey] !== 'undefined' && data[realKey] !== 'null') return data[realKey];
+                }
+            }
+            return null;
+        }
+
+        // 5a. Abstract Card
+        function createAbstractCard(id, data, missingCount) {
+            const name = smartFind(data, ['fullName', 'name', 'Name', 'username']);
+            const title = smartFind(data, ['paperTitle', 'title', 'Title']);
+            const abstract = smartFind(data, ['abstractText', 'abstract', 'Abstract']);
+            const email = smartFind(data, ['email', 'Email']);
+            const phone = smartFind(data, ['phone', 'Phone']);
+            const affiliation = smartFind(data, ['affiliation', 'Affiliation']);
+            const abstractId = smartFind(data, ['abstractId', 'id', 'ID']);
+            const fileUrl = smartFind(data, ['fileDownloadUrl', 'file', 'url']);
+            const status = smartFind(data, ['status', 'Status']) || 'pending';
+
+            const dispName = name || 'Unknown Name';
+            const dispTitle = title || 'No Title Provided';
+            const dispAbstract = abstract || 'No abstract content provided.';
+            const dispAffiliation = affiliation || 'No Affiliation';
+            
+            let statusBadge = '';
+            let cardBorder = 'border-slate-200';
+            
+            // --- FLAGS ---
+            let flags = '';
+            // 1. Missing Abstract Flag
+            if (!abstract || abstract.length < 5) {
+                flags += `<span class="bg-red-50 text-red-600 text-[10px] font-bold px-2 py-0.5 rounded border border-red-200 flex items-center gap-1 mb-1"><i class="fas fa-exclamation-circle"></i> Missing Abstract</span>`;
+            }
+            // 2. Incomplete Data Flag
+            if (missingCount > 0) {
+                flags += `<span class="bg-orange-50 text-orange-600 text-[10px] font-bold px-2 py-0.5 rounded border border-orange-200 flex items-center gap-1 mb-1"><i class="fas fa-info-circle"></i> Incomplete Data</span>`;
+            }
+
+            let idDisplay = '';
+            if (abstractId) {
+                idDisplay = `<span class="bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded shadow-sm mr-2">ID: ${abstractId}</span>`;
+            }
+
+            if (status === 'accepted') {
+                statusBadge = `<span class="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded border border-green-200 flex items-center gap-1"><i class="fas fa-check-circle"></i> Accepted</span>`;
+                cardBorder = 'border-green-300 ring-1 ring-green-100 shadow-md';
+            } else if (status === 'rejected') {
+                statusBadge = `<span class="bg-red-100 text-red-700 text-xs font-bold px-2 py-1 rounded border border-red-200 flex items-center gap-1"><i class="fas fa-times-circle"></i> Rejected</span>`;
+                cardBorder = 'border-red-200 bg-red-50/30';
+            } else {
+                statusBadge = `<span class="bg-yellow-100 text-yellow-700 text-xs font-bold px-2 py-1 rounded border border-yellow-200 flex items-center gap-1"><i class="fas fa-clock"></i> Pending</span>`;
+            }
+
+            const hasFile = fileUrl && fileUrl !== "No file uploaded";
+            const fileButton = hasFile
+                ? `<button onclick="openPreview('${fileUrl}')" class="text-blue-600 hover:text-blue-800 text-xs font-bold hover:underline flex items-center gap-1"><i class="fas fa-eye"></i> Preview Doc</button>`
+                : `<span class="text-gray-400 text-xs cursor-not-allowed"><i class="fas fa-times"></i> No Doc</span>`;
+
+            const debugBtn = `<button onclick='openDebug(${JSON.stringify(JSON.stringify(data))})' class="mt-1 text-[10px] bg-gray-800 text-white px-2 py-1 rounded hover:bg-black transition"><i class="fas fa-bug"></i> Show Raw Data</button>`;
+
+            let actionButtons = '';
+            let mailButton = '';
+
+            if (status === 'accepted') {
+                actionButtons = `
+                    <button onclick="revokeDecision('${id}')" class="w-full bg-white border border-gray-300 hover:border-orange-500 hover:text-orange-600 text-gray-600 py-1.5 rounded text-xs font-bold transition">
+                        <i class="fas fa-undo"></i> Change Decision
+                    </button>`;
+                
+                const subject = encodeURIComponent("Abstract Acceptance - IC-EMTSD-2026");
+                const body = encodeURIComponent(`Dear ${dispName},\n\nThank you for submitting your abstract...`);
+                
+                mailButton = `
+                <a href="mailto:${email || ''}?subject=${subject}&body=${body}" target="_blank" class="flex-1 bg-green-600 text-white py-2 rounded-lg font-bold text-sm hover:bg-green-700 transition flex items-center justify-center gap-2 shadow-sm">
+                    <i class="fas fa-envelope"></i> Mail
+                </a>`;
+            } else {
+                actionButtons = `
+                    <div class="flex gap-2">
+                        <button onclick="updateStatus('${id}', 'accepted')" class="flex-1 bg-white border border-gray-300 hover:border-green-500 hover:text-green-600 text-gray-600 py-1.5 rounded text-xs font-bold transition"><i class="fas fa-check"></i> Accept</button>
+                        <button onclick="updateStatus('${id}', 'rejected')" class="flex-1 bg-white border border-gray-300 hover:border-red-500 hover:text-red-600 text-gray-600 py-1.5 rounded text-xs font-bold transition"><i class="fas fa-times"></i> Reject</button>
+                    </div>`;
+                mailButton = `
+                <button disabled class="flex-1 bg-gray-100 text-gray-400 py-2 rounded-lg font-bold text-sm cursor-not-allowed flex items-center justify-center gap-2">
+                    <i class="fas fa-envelope"></i> Mail
+                </button>`;
+            }
+
+            return `
+            <div class="bg-white rounded-xl shadow-sm hover:shadow-lg transition duration-300 border ${cardBorder} flex flex-col h-full relative group">
+                <button onclick="deleteEntry('${id}')" class="absolute top-3 right-3 text-gray-300 hover:text-red-500 transition p-1 z-10">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+                <div class="p-5 border-b border-gray-100">
+                    <div class="flex justify-between items-start pr-6 mb-2">
+                        <div>
+                            <div class="flex flex-col items-start mb-2">
+                                ${flags}
+                            </div>
+                            <div class="flex flex-wrap items-center gap-y-1 mb-1">
+                                ${idDisplay}
+                                <h3 class="font-bold text-gray-800 text-lg leading-tight">${dispName}</h3>
+                            </div>
+                            <p class="text-xs text-gray-500 font-semibold uppercase tracking-wide">${dispAffiliation}</p>
+                            ${debugBtn}
+                        </div>
+                    </div>
+                    <div class="mt-2 flex items-center justify-between">
+                        ${statusBadge}
+                        ${fileButton}
+                    </div>
+                </div>
+                <div class="p-5 flex-grow space-y-4">
+                    <div class="grid grid-cols-1 gap-2 text-sm text-gray-600">
+                        <div class="flex items-center gap-2 truncate">
+                            <i class="fas fa-envelope text-blue-400 w-5"></i>
+                            <span class="select-all">${email || 'No Email'}</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-phone text-blue-400 w-5"></i>
+                            <span class="select-all">${phone || 'No Phone'}</span>
+                        </div>
+                    </div>
+                    <div class="bg-slate-50 rounded-lg p-3 border border-slate-100">
+                         <div class="mb-2">
+                            <span class="text-[10px] font-bold text-gray-400 uppercase">Title</span>
+                            <p class="text-xs font-bold text-gray-800 leading-snug">${dispTitle}</p>
+                        </div>
+                        <div class="relative">
+                            <span class="text-[10px] font-bold text-gray-400 uppercase">Abstract</span>
+                            <div id="abs-${id}" class="text-xs text-gray-600 h-20 overflow-y-auto custom-scrollbar mt-1">
+                                ${dispAbstract}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4 bg-gray-50 border-t border-gray-100 rounded-b-xl space-y-3">
+                    ${actionButtons}
+                    ${mailButton}
+                </div>
+            </div>`;
+        }
+
+        // 5b. Registration Card
+        function createRegistrationCard(id, data, missingCount) {
+            const name = smartFind(data, ['fullName', 'name', 'Name']);
+            const affiliation = smartFind(data, ['affiliation', 'Affiliation']);
+            const designation = smartFind(data, ['designation', 'Designation']);
+            const type = smartFind(data, ['type', 'Type']) || 'Participant';
+            const email = smartFind(data, ['email', 'Email']);
+            const phone = smartFind(data, ['phone', 'Phone']);
+
+            const isPresenter = type === 'Presenter';
+            const badgeColor = isPresenter ? 'bg-indigo-100 text-indigo-700 border-indigo-200' : 'bg-teal-100 text-teal-700 border-teal-200';
+            const icon = isPresenter ? 'fas fa-chalkboard-teacher' : 'fas fa-user-friends';
+
+            let flags = '';
+            if (missingCount > 0) {
+                flags += `<span class="bg-orange-50 text-orange-600 text-[10px] font-bold px-2 py-0.5 rounded border border-orange-200 flex items-center gap-1 mb-2 inline-block"><i class="fas fa-info-circle"></i> Incomplete Data</span>`;
+            }
+
+            const debugBtn = `<button onclick='openDebug(${JSON.stringify(JSON.stringify(data))})' class="mt-2 text-[10px] bg-gray-800 text-white px-2 py-1 rounded hover:bg-black transition"><i class="fas fa-bug"></i> Show Raw Data</button>`;
+
+            return `
+            <div class="bg-white rounded-xl shadow-sm hover:shadow-lg transition duration-300 border border-slate-200 flex flex-col h-full relative group">
+                <button onclick="deleteEntry('${id}')" class="absolute top-3 right-3 text-gray-300 hover:text-red-500 transition p-1 z-10">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+                <div class="p-5 border-b border-gray-100 bg-slate-50/50">
+                    <div class="flex justify-between items-start pr-6">
+                        <div>
+                            ${flags}
+                            <div class="block">
+                                <span class="inline-block ${badgeColor} text-[10px] font-bold px-2 py-0.5 rounded border mb-2 uppercase tracking-wider">
+                                    <i class="${icon} mr-1"></i> ${type}
+                                </span>
+                            </div>
+                            <h3 class="font-bold text-gray-800 text-lg leading-tight mb-1">${name || 'Unknown Name'}</h3>
+                            <p class="text-xs text-gray-500 font-semibold">${designation || 'N/A'}</p>
+                            ${debugBtn}
+                        </div>
+                    </div>
+                </div>
+                <div class="p-5 flex-grow space-y-4">
+                    <div class="space-y-3 text-sm text-gray-600">
+                         <div class="flex items-start gap-3">
+                            <div class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center flex-shrink-0 text-blue-500">
+                                <i class="fas fa-university text-xs"></i>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-bold text-gray-400 uppercase">Affiliation</p>
+                                <p class="font-medium text-gray-800 leading-tight">${affiliation || 'N/A'}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <div class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center flex-shrink-0 text-blue-500">
+                                <i class="fas fa-envelope text-xs"></i>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-bold text-gray-400 uppercase">Email</p>
+                                <p class="font-medium text-gray-800 select-all">${email || 'N/A'}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <div class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center flex-shrink-0 text-blue-500">
+                                <i class="fas fa-phone text-xs"></i>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-bold text-gray-400 uppercase">Phone</p>
+                                <p class="font-medium text-gray-800 select-all">${phone || 'N/A'}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="px-5 py-3 bg-gray-50 border-t border-gray-100 rounded-b-xl flex justify-between items-center">
+                    <span class="text-[10px] text-gray-400">Registered: ${data.submittedAt ? new Date(data.submittedAt).toLocaleDateString() : 'N/A'}</span>
+                    <a href="mailto:${email}" class="text-xs bg-white border border-gray-200 text-gray-600 px-3 py-1.5 rounded hover:bg-gray-100 transition font-bold">
+                        <i class="fas fa-paper-plane mr-1"></i> Contact
+                    </a>
+                </div>
+            </div>`;
+        }
+
+        // 6. CSV Download (Robust)
+        window.downloadCSV = function () {
+            if (globalDataCache.length === 0) {
+                showToast("No data to export", "warning");
+                return;
+            }
+            let csvContent = "data:text/csv;charset=utf-8,";
+            
+            const safe = (str) => `"${(str || "").replace(/"/g, '""')}"`;
+
+            if (currentView === 'abstracts') {
+                csvContent += "Abstract ID,Status,Full Name,Email,Phone,Affiliation,Paper Title,Abstract Text,File URL\n";
+                globalDataCache.forEach(([key, val]) => {
+                    const name = smartFind(val, ['fullName', 'name', 'Name']);
+                    const title = smartFind(val, ['paperTitle', 'title', 'Title']);
+                    const abstract = smartFind(val, ['abstractText', 'abstract', 'Abstract']);
+                    const email = smartFind(val, ['email', 'Email']);
+                    const phone = smartFind(val, ['phone', 'Phone']);
+                    const aff = smartFind(val, ['affiliation', 'Affiliation']);
+                    const file = smartFind(val, ['fileDownloadUrl', 'file', 'url']);
+                    const id = smartFind(val, ['abstractId', 'id']) || "N/A";
+                    const status = smartFind(val, ['status', 'Status']) || "pending";
+
+                    csvContent += [id, status, safe(name), safe(email), safe(phone), safe(aff), safe(title), safe(abstract), safe(file)].join(",") + "\n";
+                });
+            } else {
+                csvContent += "Type,Full Name,Email,Phone,Affiliation,Designation\n";
+                globalDataCache.forEach(([key, val]) => {
+                    const name = smartFind(val, ['fullName', 'name', 'Name']);
+                    const type = smartFind(val, ['type', 'Type']);
+                    const email = smartFind(val, ['email', 'Email']);
+                    const phone = smartFind(val, ['phone', 'Phone']);
+                    const aff = smartFind(val, ['affiliation', 'Affiliation']);
+                    const des = smartFind(val, ['designation', 'Designation']);
+                    
+                    csvContent += [safe(type), safe(name), safe(email), safe(phone), safe(aff), safe(des)].join(",") + "\n";
+                });
+            }
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", currentView + "_data.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // 7. Global Helpers & Debugging
+        window.openPreview = function (url) {
+            document.getElementById('downloadBtn').href = url;
+            document.getElementById('previewModal').classList.remove('hidden');
+            document.getElementById('previewLoader').classList.remove('hidden');
+            const iframe = document.getElementById('docFrame');
+            iframe.src = `https://docs.google.com/gview?url=${encodeURIComponent(url)}&embedded=true`;
+            iframe.onload = () => document.getElementById('previewLoader').classList.add('hidden');
+        }
+
+        window.closePreview = () => {
+            document.getElementById('previewModal').classList.add('hidden');
+            document.getElementById('docFrame').src = "";
+        }
+
+        window.openDebug = (jsonString) => {
+            let data = jsonString;
+            try { if (typeof data === 'string') data = JSON.parse(data); } catch(e){}
+            document.getElementById('debugContent').innerText = JSON.stringify(data, null, 2);
+            document.getElementById('debugModal').classList.remove('hidden');
+        }
+
+        window.closeDebug = () => document.getElementById('debugModal').classList.add('hidden');
+
+        window.revokeDecision = function(id) {
+            if(confirm("Change decision back to pending?")) updateStatus(id, 'pending');
+        }
+
+        window.updateStatus = async function (id, status) {
+            const dbRef = ref(db);
+            let updates = { status: status };
+            if (status === 'accepted') {
+                try {
+                    const snap = await get(child(dbRef, `registrations/${id}`));
+                    const val = snap.val();
+                    if (!val.abstractId) {
+                        const allSnap = await get(child(dbRef, 'registrations'));
+                        let maxId = 100;
+                        if (allSnap.exists()) {
+                            Object.values(allSnap.val()).forEach(item => {
+                                const i = item.abstractId ? parseInt(item.abstractId.replace(/[^0-9]/g, '')) : 0;
+                                if (i > maxId) maxId = i;
+                            });
+                        }
+                        updates.abstractId = `A${maxId + 1}`;
+                    }
+                } catch (e) {}
+            }
+            update(ref(db, 'registrations/' + id), updates).then(() => fetchData());
+        }
+
+        window.deleteEntry = function (id) {
+            if (confirm("Delete this entry?")) {
+                const node = currentView === 'abstracts' ? 'registrations' : 'conference_registrations';
+                remove(ref(db, `${node}/${id}`)).then(() => fetchData());
+            }
+        }
+
+        window.copyAllEmails = function () {
+            if (acceptedEmailsList.length === 0) return showToast("No emails found", "warning");
+            navigator.clipboard.writeText(acceptedEmailsList.join(', ')).then(() => showToast(`Copied ${acceptedEmailsList.length} emails`, "success"));
+        }
+
+        function showToast(msg, type) {
+            let bg = type === "success" ? "#10b981" : type === "error" ? "#ef4444" : "#f59e0b";
+            Toastify({ text: msg, duration: 3000, style: { background: bg, borderRadius: "8px" } }).showToast();
+        }
+    </script>
+</body>
+
+</html>
