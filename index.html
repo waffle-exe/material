@@ -1635,6 +1635,135 @@
             }
         });
     </script>
+    <script>
+        // Page Switching Logic
+        function switchPage(pageId, sectionId = null) {
+            // List of valid pages
+            const pages = ['main-page', 'abstract-page', 'travel-page', 'registration-page', 'accommodation-page', 'program-page'];
+            const targetPage = document.getElementById(pageId + '-page');
+
+            if (!targetPage) return;
+
+            // Hide all pages
+            pages.forEach(pid => {
+                const el = document.getElementById(pid);
+                if (el) {
+                    el.classList.add('hidden-page');
+                    el.classList.remove('flex-grow');
+                }
+            });
+
+            // Show target page
+            targetPage.classList.remove('hidden-page');
+            targetPage.classList.add('flex-grow');
+
+            // Scroll Logic
+            if (sectionId) {
+                setTimeout(() => {
+                    const section = document.getElementById(sectionId);
+                    if (section) {
+                        section.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }, 100);
+            } else {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            // Update Navigation Highlights
+            if (pageId !== 'main') {
+                updateActiveLink(pageId, null);
+            } else if (!sectionId) {
+                updateActiveLink('main', 'home');
+            }
+
+            // --- NEW: Update Browser URL Hash without reloading ---
+            if(pageId !== 'main') {
+                history.pushState(null, null, `#${pageId}`);
+            } else if (sectionId) {
+                history.pushState(null, null, `#${sectionId}`);
+            } else {
+                history.pushState(null, null, ' '); // Clear hash for home
+            }
+        }
+
+        // Toggle Mobile Menu
+        function toggleMobileMenu() {
+            document.getElementById('mobile-menu').classList.add('hidden');
+        }
+
+        // Helper to manually update active link
+        function updateActiveLink(pageId, sectionId) {
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                const isPageMatch = link.getAttribute('data-page') === pageId;
+                const isSectionMatch = !sectionId || link.getAttribute('data-section') === sectionId;
+
+                if (isPageMatch && (link.getAttribute('data-page') !== 'main' || isSectionMatch)) {
+                    link.classList.add('nav-active');
+                } else {
+                    link.classList.remove('nav-active');
+                }
+            });
+        }
+
+        // Scroll Spy Logic for Main Page
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.3
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            if (document.getElementById('main-page').classList.contains('hidden-page')) return;
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.getAttribute('id');
+                    updateActiveLink('main', id);
+                }
+            });
+        }, observerOptions);
+
+        // Initialize
+        window.addEventListener('DOMContentLoaded', () => {
+            // --- NEW: Handle Direct Links (Deep Linking) ---
+            const hash = window.location.hash.substring(1); // Remove '#'
+            const validPages = ['program', 'abstract', 'travel', 'registration', 'accommodation'];
+            
+            if (validPages.includes(hash)) {
+                switchPage(hash);
+            } else if (hash && document.getElementById(hash)) {
+                // Handle section links like #committee or #contact
+                switchPage('main', hash);
+            } else {
+                // Default to Home
+                switchPage('main');
+            }
+
+            // Observe sections on main page
+            const sections = document.querySelectorAll('section[id]');
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+
+            // Registration Form Logic (Show/Hide Paper Title)
+            const participationRadios = document.querySelectorAll('input[name="participation_type"]');
+            const paperTitleContainer = document.getElementById('paperTitleContainer');
+            const paperTitleInput = document.getElementById('regPaperTitle');
+
+            participationRadios.forEach(radio => {
+                radio.addEventListener('change', (e) => {
+                    if (e.target.value === 'Presenter') {
+                        paperTitleContainer.classList.remove('hidden');
+                        paperTitleInput.setAttribute('required', 'true');
+                    } else {
+                        paperTitleContainer.classList.add('hidden');
+                        paperTitleInput.removeAttribute('required');
+                        paperTitleInput.value = '';
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 
 </html>
