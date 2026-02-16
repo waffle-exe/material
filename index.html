@@ -101,6 +101,7 @@
         .speaker-card {
             transition: all 0.3s ease;
         }
+
         .speaker-card:hover {
             transform: translateY(-5px);
         }
@@ -115,8 +116,7 @@
                 <div class="flex items-center space-x-3">
                     <div
                         class="w-10 h-10 md:w-12 md:h-12 bg-white rounded-full flex items-center justify-center shadow-md flex-shrink-0 overflow-hidden border border-amber-200">
-                        <img src="conf.png"
-                            alt="IC-EMTSD Logo" class="w-full h-full object-contain p-1">
+                        <img src="conf.png" alt="IC-EMTSD Logo" class="w-full h-full object-contain p-1">
                     </div>
                     <div class="leading-tight">
                         <span
@@ -137,7 +137,7 @@
                     <button onclick="switchPage('main', 'committee')"
                         class="nav-link hover:text-amber-300 px-3 py-2 rounded transition duration-300 relative"
                         data-page="main" data-section="committee">Committee</button>
-                    
+
                     <button onclick="switchPage('program')"
                         class="nav-link hover:text-amber-300 px-3 py-2 rounded transition duration-300 relative"
                         data-page="program">Program</button>
@@ -145,7 +145,7 @@
                     <button onclick="switchPage('travel')"
                         class="nav-link hover:text-amber-300 px-3 py-2 rounded transition duration-300 relative"
                         data-page="travel">Travel</button>
-                      
+
                     <button onclick="switchPage('accommodation')"
                         class="nav-link hover:text-amber-300 px-3 py-2 rounded transition duration-300 relative"
                         data-page="accommodation">Accommodation</button>
@@ -198,10 +198,10 @@
                 class="block w-full text-left px-4 py-3 hover:bg-primary border-b border-white/5">Topics</button>
             <button onclick="switchPage('travel'); toggleMobileMenu()"
                 class="block w-full text-left px-4 py-3 hover:bg-primary border-b border-white/5">Travel Guide</button>
-              
+
             <button onclick="switchPage('accommodation'); toggleMobileMenu()"
                 class="block w-full text-left px-4 py-3 hover:bg-primary border-b border-white/5">Accommodation</button>
-              
+
             <button onclick="switchPage('main', 'contact'); toggleMobileMenu()"
                 class="block w-full text-left px-4 py-3 hover:bg-primary">Contact</button>
         </div>
@@ -468,27 +468,45 @@
                     </h3>
 
                     <ul class="space-y-3 text-sm text-gray-700 h-96 overflow-y-auto pr-2 custom-scrollbar">
-                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Manish K. Kashyap</strong>, Jawaharlal Nehru University, New Delhi</li>
-                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Mohamed M. Chehimi</strong>, CNRS, Université de Paris, ITODYS lab, Paris, France</li>
-                        <li class="pb-2 border-b border-amber-100"><strong>Prof. D.K. Aswal</strong>, (Former Director, CSIR-NPL) NDMA, Govt of India</li>
-                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Anindya Datta</strong>, Director, DST-INST Mohali</li>
-                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Shikha Varma</strong>, IOP, Bhubaneswar</li>
-                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Awadhesh Mani</strong>, Scientist In-Charge, UGC-DAE-CSR, IGCAR, Kalpakkam</li>
-                        <li class="pb-2 border-b border-amber-100"><strong>Dr. Pabitra Nayak</strong>, TIFR, Hyderabad</li>
+                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Manish K. Kashyap</strong>, Jawaharlal
+                            Nehru University, New Delhi</li>
+                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Mohamed M. Chehimi</strong>, CNRS,
+                            Université de Paris, ITODYS lab, Paris, France</li>
+                        <li class="pb-2 border-b border-amber-100"><strong>Prof. D.K. Aswal</strong>, (Former Director,
+                            CSIR-NPL) NDMA, Govt of India</li>
+                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Anindya Datta</strong>, Director,
+                            DST-INST Mohali</li>
+                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Shikha Varma</strong>, IOP, Bhubaneswar
+                        </li>
+                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Awadhesh Mani</strong>, Scientist
+                            In-Charge, UGC-DAE-CSR, IGCAR, Kalpakkam</li>
+                        <li class="pb-2 border-b border-amber-100"><strong>Dr. Pabitra Nayak</strong>, TIFR, Hyderabad
+                        </li>
                         <li class="pb-2 border-b border-amber-100"><strong>Prof. Ambesh Dixit</strong>, IIT Jodhpur</li>
-                        <li class="pb-2 border-b border-amber-100"><strong>Dr. Devarani Devi</strong>, IUAC, New Delhi</li>
-                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Mahendra A. More</strong>, SPPU, Pune</li>
-                        <li class="pb-2 border-b border-amber-100"><strong>Dr. Rajnish Dhiman</strong>, MNIT, Jaipur</li>
-                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Rajesh Kumar</strong>, IPU, New Delhi</li>
-                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Santosh K. Mahapatra</strong>, CUP, Bathinda</li>
-                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Govind Gupta</strong>, CSIR-NPL, New Delhi</li>
-                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Ramesh Chandra</strong>, IIT Roorkee</li>
-                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Satyabrata Patnaik</strong>, JNU, New Delhi</li>
+                        <li class="pb-2 border-b border-amber-100"><strong>Dr. Devarani Devi</strong>, IUAC, New Delhi
+                        </li>
+                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Mahendra A. More</strong>, SPPU, Pune
+                        </li>
+                        <li class="pb-2 border-b border-amber-100"><strong>Dr. Rajnish Dhiman</strong>, MNIT, Jaipur
+                        </li>
+                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Rajesh Kumar</strong>, IPU, New Delhi
+                        </li>
+                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Santosh K. Mahapatra</strong>, CUP,
+                            Bathinda</li>
+                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Govind Gupta</strong>, CSIR-NPL, New
+                            Delhi</li>
+                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Ramesh Chandra</strong>, IIT Roorkee
+                        </li>
+                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Satyabrata Patnaik</strong>, JNU, New
+                            Delhi</li>
                         <li class="pb-2 border-b border-amber-100"><strong>Prof. Arvind</strong>, IISER Mohali</li>
-                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Kavita Dorai</strong>, IISER Mohali</li>
+                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Kavita Dorai</strong>, IISER Mohali
+                        </li>
                         <li class="pb-2 border-b border-amber-100"><strong>Prof. Rajesh V. Nair</strong>, IIT Ropar</li>
-                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Nadu B. Chaure</strong>, SPPU, Pune</li>
-                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Saurab Soni</strong>, Sardar Patel University, Gujrat</li>
+                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Nadu B. Chaure</strong>, SPPU, Pune
+                        </li>
+                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Saurab Soni</strong>, Sardar Patel
+                            University, Gujrat</li>
                     </ul>
                 </div>
 
@@ -559,33 +577,46 @@
                             <i class="fas fa-globe-asia text-secondary"></i> Advisory Committee
                         </h3>
                         <ul class="space-y-3 text-sm text-gray-700 h-80 overflow-y-auto pr-2 custom-scrollbar">
-                            <li class="pb-2 border-b border-amber-100">Prof. D K Aswal, Member, National Disaster Management Authority, Government of India</li>
-                            <li class="pb-2 border-b border-amber-100">Prof. Mohamed M. Chehimi, Université de Paris, France</li>
+                            <li class="pb-2 border-b border-amber-100">Prof. D K Aswal, Member, National Disaster
+                                Management Authority, Government of India</li>
+                            <li class="pb-2 border-b border-amber-100">Prof. Mohamed M. Chehimi, Université de Paris,
+                                France</li>
                             <li class="pb-2 border-b border-amber-100">Prof. Anindya Datta, INST Mohali</li>
                             <li class="pb-2 border-b border-amber-100">Prof. Rajeev Ahuja, Director, IIT Ropar</li>
                             <li class="pb-2 border-b border-amber-100">Prof. Arvind, IISER Mohali</li>
                             <li class="pb-2 border-b border-amber-100">Prof. Awadhesh Mani, IGCAR Kalpakkam</li>
                             <li class="pb-2 border-b border-amber-100">Prof. Ambesh Dixit, IIT Jodhpur</li>
                             <li class="pb-2 border-b border-amber-100">Prof. B.S. Murty, Director, IIT Hyderabad</li>
-                            <li class="pb-2 border-b border-amber-100">Dr. Davinder Pal Sharma, University of the West Indies, West Indies</li>
+                            <li class="pb-2 border-b border-amber-100">Dr. Davinder Pal Sharma, University of the West
+                                Indies, West Indies</li>
                             <li class="pb-2 border-b border-amber-100">Dr. Devarani Devi, IUAC, New Delhi</li>
                             <li class="pb-2 border-b border-amber-100">Prof. Deshdeep Sehdev, IIT Kanpur</li>
-                            <li class="pb-2 border-b border-amber-100">Dr. Dinesh Pathak, University of West Indies, West Indies</li>
-                            <li class="pb-2 border-b border-amber-100">Prof. Kartik Ghosh, Missouri State University, Springfield, USA</li>
+                            <li class="pb-2 border-b border-amber-100">Dr. Dinesh Pathak, University of West Indies,
+                                West Indies</li>
+                            <li class="pb-2 border-b border-amber-100">Prof. Kartik Ghosh, Missouri State University,
+                                Springfield, USA</li>
                             <li class="pb-2 border-b border-amber-100">Prof. Kanishka Biswas, JNCASR Bengaluru</li>
                             <li class="pb-2 border-b border-amber-100">Prof. Kavita Dorai, IISER Mohali</li>
-                            <li class="pb-2 border-b border-amber-100">Prof. M.A. More, Savitribai Phule Pune University, Pune</li>
-                            <li class="pb-2 border-b border-amber-100">Dr. Mandeep Singh, University of Brescia, Italy</li>
-                            <li class="pb-2 border-b border-amber-100">Prof. Manish K. Kashyap, Jawaharlal Nehru University, New Delhi</li>
-                            <li class="pb-2 border-b border-amber-100">Prof. Satyabrata Patnaik, Jawaharlal Nehru University, New Delhi</li>
-                            <li class="pb-2 border-b border-amber-100">Prof. M. Navaneethan, SRM Institute of Science and Technology, Chennai </li>
-                            <li class="pb-2 border-b border-amber-100">Prof. Nandu B. Chaure, Savitribai Phule Pune University, Pune</li>
+                            <li class="pb-2 border-b border-amber-100">Prof. M.A. More, Savitribai Phule Pune
+                                University, Pune</li>
+                            <li class="pb-2 border-b border-amber-100">Dr. Mandeep Singh, University of Brescia, Italy
+                            </li>
+                            <li class="pb-2 border-b border-amber-100">Prof. Manish K. Kashyap, Jawaharlal Nehru
+                                University, New Delhi</li>
+                            <li class="pb-2 border-b border-amber-100">Prof. Satyabrata Patnaik, Jawaharlal Nehru
+                                University, New Delhi</li>
+                            <li class="pb-2 border-b border-amber-100">Prof. M. Navaneethan, SRM Institute of Science
+                                and Technology, Chennai </li>
+                            <li class="pb-2 border-b border-amber-100">Prof. Nandu B. Chaure, Savitribai Phule Pune
+                                University, Pune</li>
                             <li class="pb-2 border-b border-amber-100">Dr. Pabitra Nayak, TIFR Hyderabad</li>
                             <li class="pb-2 border-b border-amber-100">Prof. Ramesh Chandra, IIT Roorkee</li>
                             <li class="pb-2 border-b border-amber-100">Prof. Rajesh V. Nair, IIT Ropar, Rupnagar</li>
                             <li class="pb-2 border-b border-amber-100">Prof. Vasant Sathe, UGC- DAE Indore</li>
-                            <li class="pb-2 border-b border-amber-100">Prof. Shikha Varma, IOP Bhubaneswar, IUAC, New Delhi</li>
-                            <li class="pb-2 border-b border-amber-100">Prof. Satyabrata Patnaik, Jawaharlal Nehru University, New Delhi</li>
+                            <li class="pb-2 border-b border-amber-100">Prof. Shikha Varma, IOP Bhubaneswar, IUAC, New
+                                Delhi</li>
+                            <li class="pb-2 border-b border-amber-100">Prof. Satyabrata Patnaik, Jawaharlal Nehru
+                                University, New Delhi</li>
                         </ul>
                     </div>
                 </div>
@@ -608,22 +639,25 @@
             </div>
         </header>
 
-        <section id="#program" class="py-12 px-4 bg-amber-50 border-b border-amber-200">
+        <section class="py-12 px-4 bg-amber-50 border-b border-amber-200">
             <div class="container mx-auto max-w-6xl">
-                 <div class="text-center mb-8">
+                <div class="text-center mb-8">
                     <h2 class="text-3xl font-bold text-primary mb-4">Schedule & Program</h2>
                     <p class="text-gray-600 mb-6">View the detailed timeline of events for EMTSD-2026.</p>
-                    
-                    <a href="schedule_emtsd.pdf" download class="inline-block bg-primary text-white hover:bg-amber-900 px-8 py-3 rounded-full font-bold shadow-lg transition transform hover:-translate-y-1">
+
+                    <a href="schedule_emtsd.pdf" download
+                        class="inline-block bg-primary text-white hover:bg-amber-900 px-8 py-3 rounded-full font-bold shadow-lg transition transform hover:-translate-y-1">
                         <i class="fas fa-download mr-2"></i> Download Schedule PDF
                     </a>
                 </div>
 
                 <div class="bg-white p-2 md:p-4 rounded-xl shadow-xl border border-amber-200 h-[800px]">
-                    <iframe src="schedule_emtsd.pdf" class="w-full h-full rounded-lg border-none" title="Conference Schedule">
+                    <iframe src="schedule_emtsd.pdf" class="w-full h-full rounded-lg border-none"
+                        title="Conference Schedule">
                         <p class="text-center py-20 text-gray-500">
                             Your browser does not support PDF previews.<br>
-                            <a href="schedule_emtsd.pdf" class="text-secondary font-bold underline">Click here to download the schedule.</a>
+                            <a href="schedule_emtsd.pdf" class="text-secondary font-bold underline">Click here to
+                                download the schedule.</a>
                         </p>
                     </iframe>
                 </div>
@@ -1162,22 +1196,25 @@
 
         <section class="py-12 px-4 bg-amber-50">
             <div class="container mx-auto max-w-4xl">
-                 <div class="bg-white p-8 rounded-xl shadow-md border-t-4 border-secondary">
-                      <h2 class="text-2xl font-bold text-primary mb-6">Accommodation Details</h2>
-                      <p class="text-gray-700 leading-relaxed mb-4 text-lg">
-                        Limited University Guest House Accommodation will be available to participants coming for oral/ poster presentation as per university charges.
-                      </p>
-                      
-                      <div class="bg-orange-50 border-l-4 border-orange-500 p-4 mb-6">
-                          <p class="font-bold text-orange-800">Note: It will be booked on the basis of First Come, First Served.</p>
-                      </div>
-                      
-                      <div class="flex items-center gap-2 text-gray-700 mt-4">
-                          <i class="fas fa-envelope text-primary"></i>
-                          <span>Send request accordingly at conference email address at the earliest:</span>
-                          <a href="mailto:emtsd2026@gmail.com" class="font-bold text-primary hover:underline hover:text-secondary transition">emtsd2026@gmail.com</a>
-                      </div>
-                 </div>
+                <div class="bg-white p-8 rounded-xl shadow-md border-t-4 border-secondary">
+                    <h2 class="text-2xl font-bold text-primary mb-6">Accommodation Details</h2>
+                    <p class="text-gray-700 leading-relaxed mb-4 text-lg">
+                        Limited University Guest House Accommodation will be available to participants coming for oral/
+                        poster presentation as per university charges.
+                    </p>
+
+                    <div class="bg-orange-50 border-l-4 border-orange-500 p-4 mb-6">
+                        <p class="font-bold text-orange-800">Note: It will be booked on the basis of First Come, First
+                            Served.</p>
+                    </div>
+
+                    <div class="flex items-center gap-2 text-gray-700 mt-4">
+                        <i class="fas fa-envelope text-primary"></i>
+                        <span>Send request accordingly at conference email address at the earliest:</span>
+                        <a href="mailto:emtsd2026@gmail.com"
+                            class="font-bold text-primary hover:underline hover:text-secondary transition">emtsd2026@gmail.com</a>
+                    </div>
+                </div>
             </div>
         </section>
     </div>
@@ -1237,28 +1274,27 @@
     <script>
         // Page Switching Logic
         function switchPage(pageId, sectionId = null) {
-            // Added 'program-page' to the list
+            // List of valid pages
             const pages = ['main-page', 'abstract-page', 'travel-page', 'registration-page', 'accommodation-page', 'program-page'];
             const targetPage = document.getElementById(pageId + '-page');
 
-            if (!targetPage) return; // Guard clause
+            if (!targetPage) return;
 
             // Hide all pages
             pages.forEach(pid => {
                 const el = document.getElementById(pid);
                 if (el) {
                     el.classList.add('hidden-page');
-                    el.classList.remove('flex-grow'); // Remove flex-grow from hidden pages
+                    el.classList.remove('flex-grow');
                 }
             });
 
             // Show target page
             targetPage.classList.remove('hidden-page');
-            targetPage.classList.add('flex-grow'); // Add flex-grow to active page
+            targetPage.classList.add('flex-grow');
 
-            // Scroll Logic or Top
+            // Scroll Logic
             if (sectionId) {
-                // If a specific section is requested (e.g., 'about' or 'contact' on main page)
                 setTimeout(() => {
                     const section = document.getElementById(sectionId);
                     if (section) {
@@ -1269,12 +1305,20 @@
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
 
-            // Highlight logic for pages like Abstract/Travel that don't have scroll spy
+            // Update Navigation Highlights
             if (pageId !== 'main') {
                 updateActiveLink(pageId, null);
             } else if (!sectionId) {
-                // If switching to main without specific section, imply 'home'
                 updateActiveLink('main', 'home');
+            }
+
+            // Update Browser URL Hash without reloading
+            if (pageId !== 'main') {
+                history.pushState(null, null, `#${pageId}`);
+            } else if (sectionId) {
+                history.pushState(null, null, `#${sectionId}`);
+            } else {
+                history.pushState(null, null, ' '); // Clear hash for home
             }
         }
 
@@ -1302,13 +1346,11 @@
         const observerOptions = {
             root: null,
             rootMargin: '0px',
-            threshold: 0.3 // Trigger when 30% of section is visible
+            threshold: 0.3
         };
 
         const observer = new IntersectionObserver((entries) => {
-            // Check if we are on main page
             if (document.getElementById('main-page').classList.contains('hidden-page')) return;
-
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     const id = entry.target.getAttribute('id');
@@ -1319,7 +1361,19 @@
 
         // Initialize
         window.addEventListener('DOMContentLoaded', () => {
-            switchPage('main');
+            // Handle Direct Links (Deep Linking)
+            const hash = window.location.hash.substring(1); // Remove '#'
+            const validPages = ['program', 'abstract', 'travel', 'registration', 'accommodation'];
+
+            if (validPages.includes(hash)) {
+                switchPage(hash);
+            } else if (hash && document.getElementById(hash)) {
+                // Handle section links like #committee or #contact
+                switchPage('main', hash);
+            } else {
+                // Default to Home
+                switchPage('main');
+            }
 
             // Observe sections on main page
             const sections = document.querySelectorAll('section[id]');
@@ -1327,7 +1381,7 @@
                 observer.observe(section);
             });
 
-            // --- NEW: Registration Form Logic (Show/Hide Paper Title) ---
+            // Registration Form Logic (Show/Hide Paper Title)
             const participationRadios = document.querySelectorAll('input[name="participation_type"]');
             const paperTitleContainer = document.getElementById('paperTitleContainer');
             const paperTitleInput = document.getElementById('regPaperTitle');
@@ -1336,11 +1390,11 @@
                 radio.addEventListener('change', (e) => {
                     if (e.target.value === 'Presenter') {
                         paperTitleContainer.classList.remove('hidden');
-                        paperTitleInput.setAttribute('required', 'true'); // Make HTML required
+                        paperTitleInput.setAttribute('required', 'true');
                     } else {
                         paperTitleContainer.classList.add('hidden');
-                        paperTitleInput.removeAttribute('required'); // Remove requirement
-                        paperTitleInput.value = ''; // Clear value if hiding
+                        paperTitleInput.removeAttribute('required');
+                        paperTitleInput.value = '';
                     }
                 });
             });
@@ -1633,135 +1687,6 @@
                 alert("Abstract exceeds 300-word limit. Please shorten it.");
                 abstractInput.focus();
             }
-        });
-    </script>
-    <script>
-        // Page Switching Logic
-        function switchPage(pageId, sectionId = null) {
-            // List of valid pages
-            const pages = ['main-page', 'abstract-page', 'travel-page', 'registration-page', 'accommodation-page', 'program-page'];
-            const targetPage = document.getElementById(pageId + '-page');
-
-            if (!targetPage) return;
-
-            // Hide all pages
-            pages.forEach(pid => {
-                const el = document.getElementById(pid);
-                if (el) {
-                    el.classList.add('hidden-page');
-                    el.classList.remove('flex-grow');
-                }
-            });
-
-            // Show target page
-            targetPage.classList.remove('hidden-page');
-            targetPage.classList.add('flex-grow');
-
-            // Scroll Logic
-            if (sectionId) {
-                setTimeout(() => {
-                    const section = document.getElementById(sectionId);
-                    if (section) {
-                        section.scrollIntoView({ behavior: 'smooth' });
-                    }
-                }, 100);
-            } else {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
-
-            // Update Navigation Highlights
-            if (pageId !== 'main') {
-                updateActiveLink(pageId, null);
-            } else if (!sectionId) {
-                updateActiveLink('main', 'home');
-            }
-
-            // --- NEW: Update Browser URL Hash without reloading ---
-            if(pageId !== 'main') {
-                history.pushState(null, null, `#${pageId}`);
-            } else if (sectionId) {
-                history.pushState(null, null, `#${sectionId}`);
-            } else {
-                history.pushState(null, null, ' '); // Clear hash for home
-            }
-        }
-
-        // Toggle Mobile Menu
-        function toggleMobileMenu() {
-            document.getElementById('mobile-menu').classList.add('hidden');
-        }
-
-        // Helper to manually update active link
-        function updateActiveLink(pageId, sectionId) {
-            const navLinks = document.querySelectorAll('.nav-link');
-            navLinks.forEach(link => {
-                const isPageMatch = link.getAttribute('data-page') === pageId;
-                const isSectionMatch = !sectionId || link.getAttribute('data-section') === sectionId;
-
-                if (isPageMatch && (link.getAttribute('data-page') !== 'main' || isSectionMatch)) {
-                    link.classList.add('nav-active');
-                } else {
-                    link.classList.remove('nav-active');
-                }
-            });
-        }
-
-        // Scroll Spy Logic for Main Page
-        const observerOptions = {
-            root: null,
-            rootMargin: '0px',
-            threshold: 0.3
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            if (document.getElementById('main-page').classList.contains('hidden-page')) return;
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const id = entry.target.getAttribute('id');
-                    updateActiveLink('main', id);
-                }
-            });
-        }, observerOptions);
-
-        // Initialize
-        window.addEventListener('DOMContentLoaded', () => {
-            // --- NEW: Handle Direct Links (Deep Linking) ---
-            const hash = window.location.hash.substring(1); // Remove '#'
-            const validPages = ['program', 'abstract', 'travel', 'registration', 'accommodation'];
-            
-            if (validPages.includes(hash)) {
-                switchPage(hash);
-            } else if (hash && document.getElementById(hash)) {
-                // Handle section links like #committee or #contact
-                switchPage('main', hash);
-            } else {
-                // Default to Home
-                switchPage('main');
-            }
-
-            // Observe sections on main page
-            const sections = document.querySelectorAll('section[id]');
-            sections.forEach(section => {
-                observer.observe(section);
-            });
-
-            // Registration Form Logic (Show/Hide Paper Title)
-            const participationRadios = document.querySelectorAll('input[name="participation_type"]');
-            const paperTitleContainer = document.getElementById('paperTitleContainer');
-            const paperTitleInput = document.getElementById('regPaperTitle');
-
-            participationRadios.forEach(radio => {
-                radio.addEventListener('change', (e) => {
-                    if (e.target.value === 'Presenter') {
-                        paperTitleContainer.classList.remove('hidden');
-                        paperTitleInput.setAttribute('required', 'true');
-                    } else {
-                        paperTitleContainer.classList.add('hidden');
-                        paperTitleInput.removeAttribute('required');
-                        paperTitleInput.value = '';
-                    }
-                });
-            });
         });
     </script>
 </body>
