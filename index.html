@@ -137,10 +137,15 @@
                     <button onclick="switchPage('main', 'committee')"
                         class="nav-link hover:text-amber-300 px-3 py-2 rounded transition duration-300 relative"
                         data-page="main" data-section="committee">Committee</button>
+                    
+                    <button onclick="switchPage('program')"
+                        class="nav-link hover:text-amber-300 px-3 py-2 rounded transition duration-300 relative"
+                        data-page="program">Program</button>
+
                     <button onclick="switchPage('travel')"
                         class="nav-link hover:text-amber-300 px-3 py-2 rounded transition duration-300 relative"
                         data-page="travel">Travel</button>
-                     
+                      
                     <button onclick="switchPage('accommodation')"
                         class="nav-link hover:text-amber-300 px-3 py-2 rounded transition duration-300 relative"
                         data-page="accommodation">Accommodation</button>
@@ -183,16 +188,20 @@
                 class="block w-full text-left px-4 py-3 hover:bg-primary border-b border-white/5 font-semibold text-amber-300">
                 <i class="fas fa-user-plus mr-2"></i> Registration
             </button>
+            <button onclick="switchPage('program'); toggleMobileMenu()"
+                class="block w-full text-left px-4 py-3 hover:bg-primary border-b border-white/5 font-semibold text-amber-300">
+                <i class="fas fa-calendar-check mr-2"></i> Program Schedule
+            </button>
             <button onclick="switchPage('main', 'about'); toggleMobileMenu()"
                 class="block w-full text-left px-4 py-3 hover:bg-primary border-b border-white/5">About</button>
             <button onclick="switchPage('main', 'topics'); toggleMobileMenu()"
                 class="block w-full text-left px-4 py-3 hover:bg-primary border-b border-white/5">Topics</button>
             <button onclick="switchPage('travel'); toggleMobileMenu()"
                 class="block w-full text-left px-4 py-3 hover:bg-primary border-b border-white/5">Travel Guide</button>
-             
+              
             <button onclick="switchPage('accommodation'); toggleMobileMenu()"
                 class="block w-full text-left px-4 py-3 hover:bg-primary border-b border-white/5">Accommodation</button>
-             
+              
             <button onclick="switchPage('main', 'contact'); toggleMobileMenu()"
                 class="block w-full text-left px-4 py-3 hover:bg-primary">Contact</button>
         </div>
@@ -583,6 +592,43 @@
             </div>
         </section>
 
+    </div>
+
+    <div id="program-page" class="page-content hidden-page flex-grow">
+        <header class="bg-primary text-white py-4 shadow-md sticky top-0 z-50">
+            <div class="container mx-auto px-4 flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-calendar-check text-secondary text-2xl"></i>
+                    <span class="font-bold text-lg">Conference Program</span>
+                </div>
+                <button onclick="switchPage('main')"
+                    class="text-sm bg-secondary text-white px-4 py-2 rounded-lg font-bold hover:bg-amber-600 transition flex items-center gap-2">
+                    <i class="fas fa-arrow-left"></i> Back to Home
+                </button>
+            </div>
+        </header>
+
+        <section class="py-12 px-4 bg-amber-50 border-b border-amber-200">
+            <div class="container mx-auto max-w-6xl">
+                 <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold text-primary mb-4">Schedule & Program</h2>
+                    <p class="text-gray-600 mb-6">View the detailed timeline of events for EMTSD-2026.</p>
+                    
+                    <a href="schedule_emtsd.pdf" download class="inline-block bg-primary text-white hover:bg-amber-900 px-8 py-3 rounded-full font-bold shadow-lg transition transform hover:-translate-y-1">
+                        <i class="fas fa-download mr-2"></i> Download Schedule PDF
+                    </a>
+                </div>
+
+                <div class="bg-white p-2 md:p-4 rounded-xl shadow-xl border border-amber-200 h-[800px]">
+                    <iframe src="schedule_emtsd.pdf" class="w-full h-full rounded-lg border-none" title="Conference Schedule">
+                        <p class="text-center py-20 text-gray-500">
+                            Your browser does not support PDF previews.<br>
+                            <a href="schedule_emtsd.pdf" class="text-secondary font-bold underline">Click here to download the schedule.</a>
+                        </p>
+                    </iframe>
+                </div>
+            </div>
+        </section>
     </div>
 
     <div id="abstract-page" class="page-content hidden-page flex-grow">
@@ -1123,13 +1169,13 @@
                       </p>
                       
                       <div class="bg-orange-50 border-l-4 border-orange-500 p-4 mb-6">
-                         <p class="font-bold text-orange-800">Note: It will be booked on the basis of First Come, First Served.</p>
+                          <p class="font-bold text-orange-800">Note: It will be booked on the basis of First Come, First Served.</p>
                       </div>
                       
                       <div class="flex items-center gap-2 text-gray-700 mt-4">
-                         <i class="fas fa-envelope text-primary"></i>
-                         <span>Send request accordingly at conference email address at the earliest:</span>
-                         <a href="mailto:emtsd2026@gmail.com" class="font-bold text-primary hover:underline hover:text-secondary transition">emtsd2026@gmail.com</a>
+                          <i class="fas fa-envelope text-primary"></i>
+                          <span>Send request accordingly at conference email address at the earliest:</span>
+                          <a href="mailto:emtsd2026@gmail.com" class="font-bold text-primary hover:underline hover:text-secondary transition">emtsd2026@gmail.com</a>
                       </div>
                  </div>
             </div>
@@ -1191,8 +1237,8 @@
     <script>
         // Page Switching Logic
         function switchPage(pageId, sectionId = null) {
-            // Added 'registration-page' and 'accommodation-page' to the list
-            const pages = ['main-page', 'abstract-page', 'travel-page', 'registration-page', 'accommodation-page'];
+            // Added 'program-page' to the list
+            const pages = ['main-page', 'abstract-page', 'travel-page', 'registration-page', 'accommodation-page', 'program-page'];
             const targetPage = document.getElementById(pageId + '-page');
 
             if (!targetPage) return; // Guard clause
@@ -1588,9 +1634,6 @@
                 abstractInput.focus();
             }
         });
-
-        /* REMOVED SPEAKER RENDERING AND MODAL LOGIC SINCE IT IS NOW HARDCODED LIST */
-
     </script>
 </body>
 
