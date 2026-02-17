@@ -701,23 +701,28 @@
             </div>`;
         }
 
-        // 6. CSV Download (Robust)
+        // 6. CSV Download (Robust Rewrite)
         window.downloadCSV = function () {
             if (globalDataCache.length === 0) {
                 showToast("No data to export", "warning");
                 return;
             }
-            let csvContent = "data:text/csv;charset=utf-8,";
             
-            const safe = (str) => `"${(str || "").replace(/"/g, '""')}"`;
+            // Helper to safe escape CSV strings
+            // Fixes the issue where Numbers would crash the export
+            const safe = (input) => {
+                const str = String(input || ""); // Force everything to string
+                // Escape double quotes by doubling them
+                return `"${str.replace(/"/g, '""')}"`;
+            };
+
+            let csvContent = "";
 
             if (currentView === 'abstracts') {
-                // ADDED 'All Authors' column to CSV
                 csvContent += "Abstract ID,Status,Submitter Name,All Authors,Email,Phone,Affiliation,Paper Title,Abstract Text,File URL\n";
                 globalDataCache.forEach(([key, val]) => {
                     const name = smartFind(val, ['fullName', 'name', 'Name']);
-                    // Fetch Authors for CSV
-                    const allAuthors = smartFind(val, ['allAuthors', 'authors', 'Authors']) || "";
+                    const allAuthors = smartFind(val, ['allAuthors', 'authors', 'Authors']);
                     const title = smartFind(val, ['paperTitle', 'title', 'Title']);
                     const abstract = smartFind(val, ['abstractText', 'abstract', 'Abstract']);
                     const email = smartFind(val, ['email', 'Email']);
@@ -726,8 +731,22 @@
                     const file = smartFind(val, ['fileDownloadUrl', 'file', 'url']);
                     const id = smartFind(val, ['abstractId', 'id']) || "N/A";
                     const status = smartFind(val, ['status', 'Status']) || "pending";
+                    
+                    // Remove newlines from abstract to prevent CSV breakage
+                    const cleanAbstract = (abstract || "").replace(/(\r\n|\n|\r)/gm, " ");
 
-                    csvContent += [id, status, safe(name), safe(allAuthors), safe(email), safe(phone), safe(aff), safe(title), safe(abstract), safe(file)].join(",") + "\n";
+                    csvContent += [
+                        safe(id), 
+                        safe(status), 
+                        safe(name), 
+                        safe(allAuthors), 
+                        safe(email), 
+                        safe(phone), 
+                        safe(aff), 
+                        safe(title), 
+                        safe(cleanAbstract), 
+                        safe(file)
+                    ].join(",") + "\n";
                 });
             } else {
                 csvContent += "Type,Full Name,Email,Phone,Affiliation,Designation\n";
@@ -739,14 +758,27 @@
                     const aff = smartFind(val, ['affiliation', 'Affiliation']);
                     const des = smartFind(val, ['designation', 'Designation']);
                     
-                    csvContent += [safe(type), safe(name), safe(email), safe(phone), safe(aff), safe(des)].join(",") + "\n";
+                    csvContent += [
+                        safe(type), 
+                        safe(name), 
+                        safe(email), 
+                        safe(phone), 
+                        safe(aff), 
+                        safe(des)
+                    ].join(",") + "\n";
                 });
             }
 
-            const encodedUri = encodeURI(csvContent);
+            // USE BLOB instead of EncodeURI to handle Large Datasets
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", currentView + "_data.csv");
+            const url = URL.createObjectURL(blob);
+            
+            const timestamp = new Date().toISOString().slice(0,10);
+            link.setAttribute("href", url);
+            link.setAttribute("download", `${currentView}_export_${timestamp}.csv`);
+            link.style.visibility = 'hidden';
+            
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
