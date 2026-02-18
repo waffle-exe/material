@@ -387,7 +387,6 @@
                         }
 
                         // 3. Hide Rule: If >3 missing AND doesn't have essential Name+Email
-                        //    (If it HAS Name+Email, we keep it even if other stuff is missing)
                         if (missingCount > 3 && !hasEssential) {
                             return; // Skip this entry (Hide)
                         }
@@ -395,7 +394,7 @@
                         validEntries.push([key, val, missingCount]);
                     });
 
-                    globalDataCache = validEntries.map(e => [e[0], e[1]]);
+                    globalDataCache = validEntries;
                     totalCount.innerText = validEntries.length;
 
                     if (validEntries.length > 0) {
@@ -478,12 +477,70 @@
             return null;
         }
 
+        // --- NEW HELPERS FOR COPYING ---
+
+        // 1. Copy Basic Info (Title, Authors, Abstract)
+        window.copyEntryDetails = function(id) {
+            const entry = globalDataCache.find(e => e[0] === id);
+            if (!entry) return showToast("Entry not found", "error");
+            const val = entry[1];
+            
+            const title = smartFind(val, ['paperTitle', 'title', 'Title']) || "No Title";
+            const abstract = smartFind(val, ['abstractText', 'abstract', 'Abstract']) || "No Abstract";
+            const authors = smartFind(val, ['allAuthors', 'authors', 'Authors']) || smartFind(val, ['fullName', 'name']) || "Unknown Author";
+            const absId = smartFind(val, ['abstractId', 'id', 'ID']) || "N/A";
+
+            const textToCopy = `ID: ${absId}\nTitle: ${title}\nAuthors: ${authors}\n\nAbstract:\n${abstract}`;
+            
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                showToast("Abstract details copied!", "success");
+            }).catch(err => showToast("Failed to copy", "error"));
+        }
+
+        // 2. Copy Formal Acceptance Email Template
+        window.copyAcceptanceDraft = function(id) {
+            const entry = globalDataCache.find(e => e[0] === id);
+            if (!entry) return showToast("Entry not found", "error");
+            const val = entry[1];
+            
+            const title = smartFind(val, ['paperTitle', 'title']) || "Untitled";
+            const absId = smartFind(val, ['abstractId', 'id']) || "N/A";
+            const name = smartFind(val, ['fullName', 'name']) || "Author";
+
+            const emailTemplate = `Subject: Acceptance of Abstract ID: ${absId} - IC-EMTSD-2026
+
+Dear ${name},
+
+We are pleased to inform you that your abstract entitled:
+
+"${title}" (ID: ${absId})
+
+has been accepted for presentation at the International Conference on Emerging Trends in Science and Data (IC-EMTSD-2026).
+
+The review committee was impressed by the quality of your submission. We look forward to your valuable contribution to the conference proceedings.
+
+Next Steps:
+1. Please ensure your registration is completed.
+2. Prepare your full presentation slides according to the conference guidelines.
+3. If you have any queries regarding the schedule or venue, please visit our website or contact the organizing committee.
+
+Congratulations once again on your acceptance.
+
+Warm regards,
+
+Organizing Committee
+IC-EMTSD-2026
+Guru Nanak Dev University, Amritsar`;
+
+            navigator.clipboard.writeText(emailTemplate).then(() => {
+                showToast("Acceptance Draft Copied to Clipboard!", "success");
+            }).catch(err => showToast("Failed to copy draft", "error"));
+        }
+
         // 5a. Abstract Card
         function createAbstractCard(id, data, missingCount) {
             const name = smartFind(data, ['fullName', 'name', 'Name', 'username']);
-            // --- NEW: FETCH AUTHORS ---
             const allAuthors = smartFind(data, ['allAuthors', 'authors', 'Authors']);
-            // --------------------------
             const title = smartFind(data, ['paperTitle', 'title', 'Title']);
             const abstract = smartFind(data, ['abstractText', 'abstract', 'Abstract']);
             const email = smartFind(data, ['email', 'Email']);
@@ -501,13 +558,11 @@
             let statusBadge = '';
             let cardBorder = 'border-slate-200';
             
-            // --- FLAGS ---
+            // Flags
             let flags = '';
-            // 1. Missing Abstract Flag
             if (!abstract || abstract.length < 5) {
                 flags += `<span class="bg-red-50 text-red-600 text-[10px] font-bold px-2 py-0.5 rounded border border-red-200 flex items-center gap-1 mb-1"><i class="fas fa-exclamation-circle"></i> Missing Abstract</span>`;
             }
-            // 2. Incomplete Data Flag
             if (missingCount > 0) {
                 flags += `<span class="bg-orange-50 text-orange-600 text-[10px] font-bold px-2 py-0.5 rounded border border-orange-200 flex items-center gap-1 mb-1"><i class="fas fa-info-circle"></i> Incomplete Data</span>`;
             }
@@ -532,7 +587,9 @@
                 ? `<button onclick="openPreview('${fileUrl}')" class="text-blue-600 hover:text-blue-800 text-xs font-bold hover:underline flex items-center gap-1"><i class="fas fa-eye"></i> Preview Doc</button>`
                 : `<span class="text-gray-400 text-xs cursor-not-allowed"><i class="fas fa-times"></i> No Doc</span>`;
 
-            const debugBtn = `<button onclick='openDebug(${JSON.stringify(JSON.stringify(data))})' class="mt-1 text-[10px] bg-gray-800 text-white px-2 py-1 rounded hover:bg-black transition"><i class="fas fa-bug"></i> Show Raw Data</button>`;
+            // Control Buttons
+            const debugBtn = `<button onclick='openDebug(${JSON.stringify(JSON.stringify(data))})' class="text-[10px] bg-gray-800 text-white px-2 py-1 rounded hover:bg-black transition flex items-center gap-1"><i class="fas fa-bug"></i> Raw</button>`;
+            const copyBtn = `<button onclick="copyEntryDetails('${id}')" class="text-[10px] bg-indigo-50 text-indigo-600 border border-indigo-200 px-2 py-1 rounded hover:bg-indigo-100 transition flex items-center gap-1"><i class="fas fa-copy"></i> Copy Info</button>`;
 
             let actionButtons = '';
             let mailButton = '';
@@ -543,13 +600,16 @@
                         <i class="fas fa-undo"></i> Change Decision
                     </button>`;
                 
-                const subject = encodeURIComponent("Abstract Acceptance - IC-EMTSD-2026");
-                const body = encodeURIComponent(`Dear ${dispName},\n\nThank you for submitting your abstract...`);
-                
+                // Copy Acceptance Email Button
                 mailButton = `
-                <a href="mailto:${email || ''}?subject=${subject}&body=${body}" target="_blank" class="flex-1 bg-green-600 text-white py-2 rounded-lg font-bold text-sm hover:bg-green-700 transition flex items-center justify-center gap-2 shadow-sm">
-                    <i class="fas fa-envelope"></i> Mail
-                </a>`;
+                <div class="flex gap-2">
+                    <a href="mailto:${email || ''}" target="_blank" class="flex-1 bg-green-600 text-white py-2 rounded-lg font-bold text-sm hover:bg-green-700 transition flex items-center justify-center gap-2 shadow-sm">
+                        <i class="fas fa-envelope"></i> Mail
+                    </a>
+                    <button onclick="copyAcceptanceDraft('${id}')" class="flex-1 bg-green-50 text-green-700 border border-green-200 py-2 rounded-lg font-bold text-sm hover:bg-green-100 transition flex items-center justify-center gap-2 shadow-sm" title="Copy Formal Acceptance Letter">
+                        <i class="fas fa-file-signature"></i> Copy Draft
+                    </button>
+                </div>`;
             } else {
                 actionButtons = `
                     <div class="flex gap-2">
@@ -577,8 +637,11 @@
                                 ${idDisplay}
                                 <h3 class="font-bold text-gray-800 text-lg leading-tight">${dispName}</h3>
                             </div>
-                            <p class="text-xs text-gray-500 font-semibold uppercase tracking-wide">${dispAffiliation}</p>
-                            ${debugBtn}
+                            <p class="text-xs text-gray-500 font-semibold uppercase tracking-wide mb-2">${dispAffiliation}</p>
+                            <div class="flex gap-2">
+                                ${copyBtn}
+                                ${debugBtn}
+                            </div>
                         </div>
                     </div>
                     <div class="mt-2 flex items-center justify-between">
@@ -639,7 +702,7 @@
                 flags += `<span class="bg-orange-50 text-orange-600 text-[10px] font-bold px-2 py-0.5 rounded border border-orange-200 flex items-center gap-1 mb-2 inline-block"><i class="fas fa-info-circle"></i> Incomplete Data</span>`;
             }
 
-            const debugBtn = `<button onclick='openDebug(${JSON.stringify(JSON.stringify(data))})' class="mt-2 text-[10px] bg-gray-800 text-white px-2 py-1 rounded hover:bg-black transition"><i class="fas fa-bug"></i> Show Raw Data</button>`;
+            const debugBtn = `<button onclick='openDebug(${JSON.stringify(JSON.stringify(data))})' class="mt-2 text-[10px] bg-gray-800 text-white px-2 py-1 rounded hover:bg-black transition"><i class="fas fa-bug"></i> Raw</button>`;
 
             return `
             <div class="bg-white rounded-xl shadow-sm hover:shadow-lg transition duration-300 border border-slate-200 flex flex-col h-full relative group">
@@ -656,22 +719,13 @@
                                 </span>
                             </div>
                             <h3 class="font-bold text-gray-800 text-lg leading-tight mb-1">${name || 'Unknown Name'}</h3>
-                            <p class="text-xs text-gray-500 font-semibold">${designation || 'N/A'}</p>
+                            <p class="text-xs text-gray-500 font-semibold">${designation || 'N/A'} - ${affiliation || 'N/A'}</p>
                             ${debugBtn}
                         </div>
                     </div>
                 </div>
                 <div class="p-5 flex-grow space-y-4">
                     <div class="space-y-3 text-sm text-gray-600">
-                         <div class="flex items-start gap-3">
-                            <div class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center flex-shrink-0 text-blue-500">
-                                <i class="fas fa-university text-xs"></i>
-                            </div>
-                            <div>
-                                <p class="text-[10px] font-bold text-gray-400 uppercase">Affiliation</p>
-                                <p class="font-medium text-gray-800 leading-tight">${affiliation || 'N/A'}</p>
-                            </div>
-                        </div>
                         <div class="flex items-start gap-3">
                             <div class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center flex-shrink-0 text-blue-500">
                                 <i class="fas fa-envelope text-xs"></i>
@@ -708,11 +762,8 @@
                 return;
             }
             
-            // Helper to safe escape CSV strings
-            // Fixes the issue where Numbers would crash the export
             const safe = (input) => {
-                const str = String(input || ""); // Force everything to string
-                // Escape double quotes by doubling them
+                const str = String(input || "");
                 return `"${str.replace(/"/g, '""')}"`;
             };
 
@@ -732,7 +783,6 @@
                     const id = smartFind(val, ['abstractId', 'id']) || "N/A";
                     const status = smartFind(val, ['status', 'Status']) || "pending";
                     
-                    // Remove newlines from abstract to prevent CSV breakage
                     const cleanAbstract = (abstract || "").replace(/(\r\n|\n|\r)/gm, " ");
 
                     csvContent += [
@@ -769,7 +819,6 @@
                 });
             }
 
-            // USE BLOB instead of EncodeURI to handle Large Datasets
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement("a");
             const url = URL.createObjectURL(blob);
