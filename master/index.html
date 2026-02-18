@@ -1,271 +1,801 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel | IC-EMTSD-2026</title>
+    <title>EMTSD-2026 | International Conference on Emerging Materials</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
+        import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+    </script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        primary: '#1e3a8a',
-                        secondary: '#3b82f6',
-                        success: '#10b981',
-                        danger: '#ef4444',
-                        warning: '#f59e0b'
+                        primary: '#78350f', // Amber 900
+                        secondary: '#d97706', // Amber 600
+                        accent: '#451a03', // Amber 950
+                        surface: '#fffbeb', // Amber 50
+                        highlight: '#f59e0b', // Amber 500
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.3s ease-out'
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(-10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
                     }
                 }
             }
         }
     </script>
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f8fafc;
-        }
-
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 4px;
-        }
-
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #f1f5f9;
-        }
-
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 4px;
-        }
-
-        .login-bg {
-            background-image: linear-gradient(rgba(30, 58, 138, 0.95), rgba(23, 37, 84, 0.9)), url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRGYw1rWJqyjVLzGctWiub4rYpb3rHnj4uMGQ&s');
+        body { font-family: 'Inter', sans-serif; }
+        .hero-bg {
+            background-image: linear-gradient(rgba(69, 26, 3, 0.9), rgba(120, 53, 15, 0.85)), url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRGYw1rWJqyjVLzGctWiub4rYpb3rHnj4uMGQ&s');
             background-size: cover;
             background-position: center;
         }
-
-        .tab-active {
-            background-color: #1e3a8a;
-            color: white;
-            border-color: #1e3a8a;
-        }
-
-        .tab-inactive {
-            background-color: white;
-            color: #64748b;
-            border-color: #e2e8f0;
-        }
-        
-        @keyframes spin-slow {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        .animate-spin-slow {
-            animation: spin-slow 1s linear infinite;
-        }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #fdf2f8; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #78350f; }
+        .page-content { transition: opacity 0.3s ease-in-out; animation: fadeIn 0.5s ease-out; }
+        .hidden-page { display: none !important; opacity: 0; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .nav-active { color: #fcd34d !important; font-weight: bold; }
+        .speaker-card { transition: all 0.3s ease; }
+        .speaker-card:hover { transform: translateY(-5px); }
     </style>
 </head>
 
-<body class="text-gray-800">
+<body class="bg-stone-50 text-gray-800 flex flex-col min-h-screen font-serif">
 
-    <div id="loginSection" class="fixed inset-0 z-50 flex items-center justify-center login-bg">
-        <div class="bg-white p-10 rounded-2xl shadow-2xl max-w-md w-full mx-4 border border-slate-200">
-            <div class="text-center mb-8">
-                <div
-                    class="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-blue-100">
-                    <i class="fas fa-shield-alt text-3xl text-primary"></i>
-                </div>
-                <h2 class="text-3xl font-bold text-gray-800 tracking-tight">Admin Portal</h2>
-                <p class="text-gray-500 mt-2 text-sm">IC-EMTSD-2026 Database</p>
-            </div>
-
-            <form id="loginForm" class="space-y-6">
-                <div>
-                    <label class="block text-xs font-bold text-gray-500 uppercase mb-2 tracking-wider">Access
-                        Key</label>
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-4">
-                            <i class="fas fa-lock text-gray-400"></i>
-                        </span>
-                        <input type="password" id="passwordInput"
-                            class="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-300 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition bg-slate-50"
-                            placeholder="Enter password">
+    <nav class="bg-primary text-white sticky top-0 z-50 shadow-lg border-b border-amber-900">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center h-14 md:h-16">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 md:w-12 md:h-12 bg-white rounded-full flex items-center justify-center shadow-md flex-shrink-0 overflow-hidden border border-amber-200">
+                        <img src="conf.png" alt="IC-EMTSD Logo" class="w-full h-full object-contain p-1">
+                    </div>
+                    <div class="leading-tight">
+                        <span class="block font-bold text-base md:text-lg truncate max-w-[200px] md:max-w-none">EMTSD-2026</span>
                     </div>
                 </div>
-                <button type="submit"
-                    class="w-full bg-primary text-white font-bold py-3.5 rounded-xl hover:bg-blue-900 transition shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
-                    Login to Dashboard
+
+                <div class="hidden lg:flex items-center space-x-1 text-sm font-semibold" id="desktop-nav">
+                    <button onclick="switchPage('main', 'home')" class="nav-link hover:text-amber-300 px-3 py-2 rounded transition duration-300 relative" data-page="main" data-section="home">Home</button>
+                    <button onclick="switchPage('main', 'about')" class="nav-link hover:text-amber-300 px-3 py-2 rounded transition duration-300 relative" data-page="main" data-section="about">About</button>
+                    <button onclick="switchPage('main', 'topics')" class="nav-link hover:text-amber-300 px-3 py-2 rounded transition duration-300 relative" data-page="main" data-section="topics">Topics</button>
+                    <button onclick="switchPage('main', 'committee')" class="nav-link hover:text-amber-300 px-3 py-2 rounded transition duration-300 relative" data-page="main" data-section="committee">Committee</button>
+                    <button onclick="switchPage('program')" class="nav-link hover:text-amber-300 px-3 py-2 rounded transition duration-300 relative" data-page="program">Program</button>
+                    <button onclick="switchPage('travel')" class="nav-link hover:text-amber-300 px-3 py-2 rounded transition duration-300 relative" data-page="travel">Travel</button>
+                    <button onclick="switchPage('accommodation')" class="nav-link hover:text-amber-300 px-3 py-2 rounded transition duration-300 relative" data-page="accommodation">Accommodation</button>
+                    <button onclick="switchPage('main', 'contact')" class="nav-link hover:text-amber-300 px-3 py-2 rounded transition duration-300 relative" data-page="main" data-section="contact">Contact</button>
+                    <button onclick="switchPage('registration')" class="nav-link hover:text-amber-300 px-3 py-2 rounded transition duration-300 relative" data-page="registration">Registration</button>
+
+                    <button disabled class="ml-4 bg-gray-500 text-gray-300 px-4 py-2 rounded-full font-bold shadow-none cursor-not-allowed relative group flex items-center gap-2 opacity-80">
+                        <i class="fas fa-lock"></i> Submission Closed
+                    </button>
+                </div>
+
+                <button class="lg:hidden text-white focus:outline-none p-2" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+                    <i class="fas fa-bars text-lg"></i>
                 </button>
-            </form>
+            </div>
         </div>
-    </div>
+        <div id="mobile-menu" class="hidden lg:hidden bg-accent pb-4 border-t border-amber-900 absolute w-full left-0 top-14 shadow-xl z-50">
+            <button onclick="switchPage('main', 'home'); toggleMobileMenu()" class="block w-full text-left px-4 py-3 hover:bg-primary border-b border-white/5">Home</button>
+            
+            <button disabled class="block w-full text-left px-4 py-3 bg-gray-700 text-gray-400 font-bold border-b border-white/5 flex items-center gap-2 cursor-not-allowed">
+                <i class="fas fa-lock"></i> Abstracts Closed
+            </button>
 
-    <div id="dashboardSection" class="hidden min-h-screen flex flex-col">
+            <button onclick="switchPage('registration'); toggleMobileMenu()" class="block w-full text-left px-4 py-3 hover:bg-primary border-b border-white/5 font-semibold text-amber-300"><i class="fas fa-user-plus mr-2"></i> Registration</button>
+            <button onclick="switchPage('program'); toggleMobileMenu()" class="block w-full text-left px-4 py-3 hover:bg-primary border-b border-white/5 font-semibold text-amber-300"><i class="fas fa-calendar-check mr-2"></i> Program Schedule</button>
+            <button onclick="switchPage('main', 'about'); toggleMobileMenu()" class="block w-full text-left px-4 py-3 hover:bg-primary border-b border-white/5">About</button>
+            <button onclick="switchPage('main', 'topics'); toggleMobileMenu()" class="block w-full text-left px-4 py-3 hover:bg-primary border-b border-white/5">Topics</button>
+            <button onclick="switchPage('travel'); toggleMobileMenu()" class="block w-full text-left px-4 py-3 hover:bg-primary border-b border-white/5">Travel Guide</button>
+            <button onclick="switchPage('accommodation'); toggleMobileMenu()" class="block w-full text-left px-4 py-3 hover:bg-primary border-b border-white/5">Accommodation</button>
+            <button onclick="switchPage('main', 'contact'); toggleMobileMenu()" class="block w-full text-left px-4 py-3 hover:bg-primary">Contact</button>
+        </div>
+    </nav>
 
-        <nav class="bg-white border-b border-gray-200 sticky top-0 z-40 shadow-sm backdrop-blur-md bg-opacity-90">
-            <div
-                class="container mx-auto px-4 md:px-6 py-3 flex flex-col md:flex-row justify-between items-center gap-4">
-                <div class="flex items-center gap-4">
-                    <div
-                        class="h-10 w-10 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center text-white font-bold shadow-md">
-                        <i class="fas fa-database"></i>
+    <div id="main-page" class="page-content flex-grow">
+
+        <section id="home" class="hero-bg min-h-[500px] md:h-[650px] flex items-center justify-center text-center px-4 py-16 md:py-0">
+            <div class="max-w-4xl text-white">
+                <span class="inline-block py-1 px-3 rounded-full bg-secondary text-white text-xs md:text-sm font-bold mb-4 md:mb-6 animate-bounce shadow-lg">
+                    February 26-27, 2026
+                </span>
+                <h1 class="text-3xl sm:text-4xl md:text-6xl font-bold mb-4 md:mb-6 leading-tight drop-shadow-md">
+                    International Conference on Emerging Materials and Technologies for Sustainable Development
+                </h1>
+                <p class="text-lg md:text-2xl mb-6 md:mb-8 text-amber-50">
+                    Organized by Department of Physics, Guru Nanak Dev University, Amritsar
+                    <br><span class="text-sm italic opacity-80">(Under RUSA 2.0, Centre for Sustainable Habitat)</span>
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                    
+                    <button disabled class="bg-gray-500 text-gray-200 px-6 md:px-8 py-3 font-bold cursor-not-allowed transition duration-300 text-base md:text-lg shadow-none flex items-center gap-2 opacity-80">
+                        <i class="fas fa-lock"></i> Submission Closed
+                    </button>
+
+                    <button onclick="switchPage('registration')" class="bg-white text-primary hover:bg-stone-100 px-6 md:px-8 py-3 font-bold transition duration-300 text-base md:text-lg shadow-lg flex items-center gap-2">
+                        <i class="fas fa-user-plus"></i> Register Now
+                    </button>
+                    <a href="brochure.pdf" download>
+                        <button class="bg-white text-primary hover:bg-stone-100 px-6 md:px-8 py-3 font-bold shadow-lg flex items-center gap-2">
+                            Brochure
+                        </button>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-white py-8 border-b border-stone-200">
+            <div class="container mx-auto px-4 text-center">
+                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-6">Organized By & Supported Under</p>
+                <div class="flex flex-wrap justify-center items-center gap-12 md:gap-20 grayscale hover:grayscale-0 transition-all duration-500">
+                    <a href="https://online.gndu.ac.in/" target="_blank" class="group flex flex-col items-center">
+                        <img src="https://upload.wikimedia.org/wikipedia/en/1/1a/Guru_Nanak_Dev_University_Logo.png?20250513000205" alt="GNDU Logo" class="h-20 md:h-24 w-auto object-contain group-hover:scale-105 transition duration-300">
+                    </a>
+                    <div class="flex flex-col items-center group">
+                        <img src="https://mkurusa.in/img/rusa-logo1.png" alt="RUSA Logo" class="h-16 md:h-20 w-auto object-contain group-hover:scale-105 transition duration-300">
+                        <span class="text-10px text-gray-500 font-bold mt-2">RUSA 2.0, Centre for Sustainable Habitat</span>
                     </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="bg-surface border-b border-amber-100 py-4 shadow-inner">
+            <div class="container mx-auto px-4">
+                <div class="flex flex-col md:flex-row justify-center gap-3 md:gap-12 text-sm md:text-base items-center">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt text-primary"></i>
+                        <span class="font-semibold text-primary">Abstract Submission:</span> 
+                        <span class="text-red-600 line-through decoration-2">February 15, 2026</span>
+                        <span class="text-red-600 font-bold ml-1">(Closed)</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt text-primary"></i>
+                        <span class="font-semibold text-primary">Abstract Acceptance:</span> <span class="text-gray-600">February 17, 2026</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt text-primary"></i>
+                        <span class="font-semibold text-primary">Registeration Deadline:</span> <span class="text-gray-600">February 20, 2026</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-map-marker-alt text-primary"></i>
+                        <span class="font-semibold text-primary">Venue:</span> <span class="text-gray-600">GNDU, Amritsar</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-surface border-b border-gray-100 py-4 shadow-inner">
+             <div class="container mx-auto px-4">
+                <div class="flex flex-col md:flex-row justify-center gap-3 md:gap-12 text-sm md:text-base items-center">
+                    <div class="flex items-center gap-2">
+                         <span class="font-semibold text-primary">Awards:</span> <span class="text-gray-600">Best Presentation Awards will be presented to recognize outstanding oral and poster presentations by participants.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <section id="about" class="py-12 md:py-20 bg-white">
+            <div class="container mx-auto px-4">
+                <div class="grid md:grid-cols-2 gap-8 md:gap-12 items-start">
                     <div>
-                        <h1 class="text-xl font-bold text-gray-800 leading-none">Admin Console</h1>
-                        <span class="text-xs text-gray-500 font-medium" id="pageTitle">Manage Abstracts</span>
+                        <h2 class="text-2xl md:text-3xl font-bold text-primary mb-6 border-l-4 border-secondary pl-4">About The Conference</h2>
+                        <p class="text-gray-700 mb-4 leading-relaxed text-justify text-sm md:text-base">
+                            The International Conference on Emerging Materials and Technologies for Sustainable Development aims to bring together leading researchers, academicians, industry professionals to discuss recent advances and future directions in materials science and technology that support sustainable development. The conference focuses on cutting-edge research in advanced two-dimensional and quantum materials, nanomaterials and nanotechnology, thin-film technologies, magnetic and dielectric materials, and sustainable glass and environmental technologies. EMTSD serves as a multidisciplinary platform for knowledge exchange, fostering collaboration between fundamental science and applied technologies, and aims to accelerate the development of innovative materials and solutions for a sustainable and energy-efficient future.
+                        </p>
+                        <h2 class="text-2xl md:text-3xl font-bold text-primary mb-6 border-l-4 border-secondary pl-4">About Department of Physics, GNDU</h2>
+                        <p class="text-gray-700 mb-4 leading-relaxed text-justify text-sm md:text-base">
+                            Department of Physics at Guru Nanak Dev University (GNDU), Amritsar, is a center of excellence in physics education and advanced research. With a strong academic foundation and a progressive research outlook, the department actively contributes to contemporary scientific and technological advancements. Research strengths include Materials Science, Nuclear Physics, and Quantum Physics & Technologies, with emphasis on emerging materials, nuclear phenomena, and next-generation quantum applications aligned with sustainable development goals. The department offers UG, PG, and PhD programs designed to develop analytical thinking, experimental expertise, and research proficiency. Its alumni are well placed in academia, research institutions, and high-technology sectors worldwide.The Vision of the Department is to emerge as a globally recognized center of excellence in physics education and research.
+                        </p>
+                    </div>
+                    <div class="bg-surface p-6 md:p-8 rounded-2xl shadow-lg border border-amber-100">
+                        <img src="https://images.shiksha.com/mediadata/images/articles/1620198146php1eyiUF.jpeg" alt="GNDU Campus" class="w-full h-48 object-cover rounded-xl mb-6 shadow-sm">
+                        <h3 class="text-xl md:text-2xl font-bold text-primary mb-4">About GNDU</h3>
+                        <p class="text-gray-600 mb-6 leading-relaxed text-justify text-sm md:text-base">
+                            Established in 1969, Guru Nanak Dev University (GNDU), Amritsar, is a state public university recognized by the University Grants Commission (UGC). The university has been re-accredited with an “A++” grade by NAAC, scoring 3.85 out of 4.00, highest among all India Central, State Public and Private Universities. GNDU has also been recognized as a “University with Potential for Excellence” by the UGC. With a strong emphasis on research, innovation, and holistic education, the university has earned a distinguished reputation in science, technology, and allied disciplines. Its commitment to academic excellence and sustainable development continues to inspire scholars and researchers across the globe.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="topics" class="py-12 md:py-20 bg-amber-50">
+             <div class="container mx-auto px-4">
+                <div class="text-center mb-8 md:mb-12">
+                    <h2 class="text-2xl md:text-3xl font-bold text-primary mb-4">Topics of Interest</h2>
+                    <div class="w-24 h-1 bg-secondary mx-auto mb-6"></div>
+                    <p class="text-gray-600 max-w-2xl mx-auto text-sm md:text-base">Exploring the frontiers of sustainable energy and materials science.</p>
+                </div>
+                <div class="bg-white rounded-2xl shadow-md border border-amber-100 p-6 md:p-12 mb-12">
+                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-4 md:gap-y-6 text-sm md:text-base">
+                        <div class="flex items-start gap-3"><i class="fas fa-leaf text-secondary mt-1 flex-shrink-0"></i><span class="text-gray-700 font-medium hover:text-primary transition">Sustainable and green practices in Energy</span></div>
+                        <div class="flex items-start gap-3"><i class="fas fa-solar-panel text-secondary mt-1 flex-shrink-0"></i><span class="text-gray-700 font-medium hover:text-primary transition">Sustainable and Renewable Energy Materials</span></div>
+                        <div class="flex items-start gap-3"><i class="fas fa-burn text-secondary mt-1 flex-shrink-0"></i><span class="text-gray-700 font-medium hover:text-primary transition">Catalytic Hydrogen production and Fuel Cell Technologies</span></div>
+                        <div class="flex items-start gap-3"><i class="fas fa-car-battery text-secondary mt-1 flex-shrink-0"></i><span class="text-gray-700 font-medium hover:text-primary transition">Batteries, Supercapacitors and Hybrid Sustainable Energy Storage & Conversion</span></div>
+                        <div class="flex items-start gap-3"><i class="fas fa-cloud text-secondary mt-1 flex-shrink-0"></i><span class="text-gray-700 font-medium hover:text-primary transition">Carbon capture and storage</span></div>
+                        <div class="flex items-start gap-3"><i class="fas fa-globe-americas text-secondary mt-1 flex-shrink-0"></i><span class="text-gray-700 font-medium hover:text-primary transition">Sustainable Environmental Technology</span></div>
+                        <div class="flex items-start gap-3"><i class="fas fa-microchip text-secondary mt-1 flex-shrink-0"></i><span class="text-gray-700 font-medium hover:text-primary transition">Emerging Quantum Technologies</span></div>
+                        <div class="flex items-start gap-3"><i class="fas fa-layer-group text-secondary mt-1 flex-shrink-0"></i><span class="text-gray-700 font-medium hover:text-primary transition">Advanced 2D and Quantum Materials</span></div>
+                        <div class="flex items-start gap-3"><i class="fas fa-dna text-secondary mt-1 flex-shrink-0"></i><span class="text-gray-700 font-medium hover:text-primary transition">Nanomaterials and Nanotechnology</span></div>
+                        <div class="flex items-start gap-3"><i class="fas fa-magnet text-secondary mt-1 flex-shrink-0"></i><span class="text-gray-700 font-medium hover:text-primary transition">Magnetic and Dielectric Materials</span></div>
+                        <div class="flex items-start gap-3"><i class="fas fa-temperature-high text-secondary mt-1 flex-shrink-0"></i><span class="text-gray-700 font-medium hover:text-primary transition">Thermoelectric Materials</span></div>
+                        <div class="flex items-start gap-3"><i class="fas fa-spray-can text-secondary mt-1 flex-shrink-0"></i><span class="text-gray-700 font-medium hover:text-primary transition">Surface Engineering and Thin film Technologies</span></div>
+                        <div class="flex items-start gap-3"><i class="fas fa-wine-glass-alt text-secondary mt-1 flex-shrink-0"></i><span class="text-gray-700 font-medium hover:text-primary transition">Sustainable glass Technology</span></div>
+                        <div class="flex items-start gap-3"><i class="fas fa-brain text-secondary mt-1 flex-shrink-0"></i><span class="text-gray-700 font-medium hover:text-primary transition">Theoretical AI and ML approaches in Materials</span></div>
+                        <div class="flex items-start gap-3"><i class="fas fa-laptop-code text-secondary mt-1 flex-shrink-0"></i><span class="text-gray-700 font-medium hover:text-primary transition">Computational Materials Science and Materials Informatics</span></div>
+                        <div class="flex items-start gap-3"><i class="fas fa-project-diagram text-secondary mt-1 flex-shrink-0"></i><span class="text-gray-700 font-medium hover:text-primary transition">First-Principles Calculations, DFT and Atomistic Modelling</span></div>
                     </div>
                 </div>
 
-                <div class="flex bg-slate-100 p-1 rounded-lg border border-slate-200">
-                    <button onclick="switchView('abstracts')" id="btnAbstracts"
-                        class="px-4 py-1.5 rounded-md text-sm font-bold transition shadow-sm tab-active flex items-center gap-2">
-                        <i class="fas fa-file-alt"></i> Abstracts
-                    </button>
-                    <button onclick="switchView('registrations')" id="btnRegistrations"
-                        class="px-4 py-1.5 rounded-md text-sm font-bold transition flex items-center gap-2 tab-inactive">
-                        <i class="fas fa-users"></i> Registrations
-                    </button>
-                </div>
-
-                <div class="flex items-center gap-3">
-                    <button onclick="fetchData()" id="refreshBtn"
-                        class="bg-blue-50 text-blue-600 px-3 py-2 rounded-lg font-bold text-sm hover:bg-blue-100 transition border border-blue-200 flex items-center gap-2">
-                        <i class="fas fa-sync-alt" id="refreshIcon"></i> Refresh
-                    </button>
-
-                    <button onclick="downloadCSV()"
-                        class="bg-green-600 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-green-700 transition flex items-center gap-2 shadow-sm">
-                        <i class="fas fa-file-csv"></i> Export Data
-                    </button>
-
-                    <button onclick="copyAllEmails()"
-                        class="bg-indigo-50 text-indigo-600 px-4 py-2 rounded-lg font-bold text-sm hover:bg-indigo-100 transition border border-indigo-200 flex items-center gap-2">
-                        <i class="fas fa-copy"></i> Emails
-                    </button>
-
-                    <div class="bg-gray-100 px-4 py-2 rounded-lg text-sm font-bold text-gray-600 border border-gray-200">
-                        Total: <span id="totalCount" class="text-primary">0</span>
-                    </div>
-
-                    <button onclick="logout()"
-                        class="text-gray-400 hover:text-red-500 transition p-2 rounded-full hover:bg-red-50"
-                        title="Logout">
-                        <i class="fas fa-power-off text-lg"></i>
-                    </button>
+                <div class="mt-12 bg-white p-6 md:p-8 rounded-xl shadow-md border-l-4 border-highlight">
+                    <h3 class="text-xl md:text-2xl font-bold mb-6 flex items-center gap-2 text-primary"><i class="fas fa-microphone-alt text-secondary"></i> Invited Speakers</h3>
+                    <ul class="space-y-3 text-sm text-gray-700 h-96 overflow-y-auto pr-2 custom-scrollbar">
+                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Manish K. Kashyap</strong>, Jawaharlal Nehru University, New Delhi</li>
+                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Mohamed M. Chehimi</strong>, CNRS, Université de Paris, ITODYS lab, Paris, France</li>
+                        <li class="pb-2 border-b border-amber-100"><strong>Prof. D.K. Aswal</strong>, (Former Director, CSIR-NPL) NDMA, Govt of India</li>
+                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Anindya Datta</strong>, Director, DST-INST Mohali</li>
+                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Shikha Varma</strong>, IOP, Bhubaneswar</li>
+                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Awadhesh Mani</strong>, Scientist In-Charge, UGC-DAE-CSR, IGCAR, Kalpakkam</li>
+                        <li class="pb-2 border-b border-amber-100"><strong>Dr. Pabitra Nayak</strong>, TIFR, Hyderabad</li>
+                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Ambesh Dixit</strong>, IIT Jodhpur</li>
+                        <li class="pb-2 border-b border-amber-100"><strong>Dr. Devarani Devi</strong>, IUAC, New Delhi</li>
+                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Mahendra A. More</strong>, SPPU, Pune</li>
+                        <li class="pb-2 border-b border-amber-100"><strong>Dr. Rajnish Dhiman</strong>, MNIT, Jaipur</li>
+                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Rajesh Kumar</strong>, IPU, New Delhi</li>
+                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Santosh K. Mahapatra</strong>, CUP, Bathinda</li>
+                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Govind Gupta</strong>, CSIR-NPL, New Delhi</li>
+                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Ramesh Chandra</strong>, IIT Roorkee</li>
+                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Satyabrata Patnaik</strong>, JNU, New Delhi</li>
+                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Arvind</strong>, IISER Mohali</li>
+                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Kavita Dorai</strong>, IISER Mohali</li>
+                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Rajesh V. Nair</strong>, IIT Ropar</li>
+                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Nadu B. Chaure</strong>, SPPU, Pune</li>
+                        <li class="pb-2 border-b border-amber-100"><strong>Prof. Saurab Soni</strong>, Sardar Patel University, Gujrat</li>
+                    </ul>
                 </div>
             </div>
-        </nav>
+        </section>
 
-        <main class="flex-grow container mx-auto px-4 md:px-6 py-8">
-
-            <div id="loader" class="flex flex-col items-center justify-center py-20">
-                <i class="fas fa-circle-notch fa-spin text-4xl text-secondary mb-4"></i>
-                <p class="text-gray-500 font-medium animate-pulse">Syncing Database...</p>
-            </div>
-
-            <div id="emptyState" class="hidden flex flex-col items-center justify-center py-20 text-center">
-                <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-                    <i class="fas fa-inbox text-3xl text-gray-400"></i>
+        <section id="committee" class="py-12 md:py-20 bg-white">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-10 md:mb-16">
+                    <h2 class="text-2xl md:text-3xl font-bold text-primary mb-4">Organizing Committee</h2>
+                    <div class="w-24 h-1 bg-secondary mx-auto"></div>
                 </div>
-                <h3 class="text-lg font-bold text-gray-600">No Data</h3>
-                <p class="text-gray-400 text-sm">No entries found in this category.</p>
-            </div>
 
-            <div id="mainContainer" class="hidden space-y-8">
-                <div id="acceptedSection" class="hidden">
-                    <div class="flex items-center gap-3 mb-4 border-b border-gray-200 pb-2">
-                        <div class="bg-green-100 p-2 rounded-lg text-green-700">
-                            <i class="fas fa-check-double text-xl"></i>
+                <div class="mb-10 md:mb-16">
+                    <div class="flex flex-col md:flex-row justify-center gap-8 md:gap-12 text-center">
+                        <div class="w-full md:w-1/3 max-w-sm p-6 bg-surface shadow-sm border border-amber-100 hover:shadow-md transition">
+                            <h3 class="text-xl md:text-2xl font-bold text-center mb-6 md:mb-8 text-amber-900">Chief Patron</h3>
+                            <div class="w-20 h-20 md:w-28 md:h-28 mx-auto mb-4 overflow-hidden bg-white border border-amber-200">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTxEQXFuBuRF6Ukz7EQdrRf3XH56Q7MannTpg&s" alt="vc" class="w-full h-full object-contain p-2">
+                            </div>
+                            <h4 class="font-bold text-lg md:text-xl text-primary leading-tight">Prof. (Dr.) Karamjeet Singh</h4>
+                            <p class="text-sm text-gray-500 mt-2 font-semibold">Vice Chancellor, GNDU</p>
                         </div>
-                        <h2 class="text-2xl font-bold text-gray-800">Accepted Abstracts</h2>
-                        <span class="bg-gray-100 text-gray-600 px-2 py-0.5 rounded text-sm font-bold"
-                            id="acceptedCount">0</span>
+                        <div class="w-full md:w-1/3 max-w-sm p-6 bg-surface shadow-sm border border-amber-100 hover:shadow-md transition">
+                            <h3 class="text-xl md:text-2xl font-bold text-center mb-6 md:mb-8 text-amber-900">Convenor</h3>
+                            <div class="w-20 h-20 md:w-28 md:h-28 mx-auto mb-4 overflow-hidden bg-white border border-amber-200">
+                                <img src="hod.png" alt="amansir" class="w-full h-full object-contain p-2">
+                            </div>
+                            <h4 class="font-bold text-lg md:text-xl text-primary leading-tight">Prof. (Dr.) Aman Mahajan</h4>
+                            <p class="text-sm text-gray-500 mt-2 font-semibold">Head, Department of Physics, GNDU</p>
+                        </div>
                     </div>
-                    <div id="acceptedGrid" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6"></div>
                 </div>
 
-                <div id="regularSection">
-                    <div id="pendingHeader" class="hidden flex items-center gap-3 mb-4 border-b border-gray-200 pb-2">
-                        <div class="bg-yellow-100 p-2 rounded-lg text-yellow-700">
-                            <i class="fas fa-hourglass-half text-xl"></i>
-                        </div>
-                        <h2 class="text-2xl font-bold text-gray-800">Applications Queue</h2>
-                        <span class="bg-gray-100 text-gray-600 px-2 py-0.5 rounded text-sm font-bold"
-                            id="pendingCount">0</span>
+                <div class="grid md:grid-cols-2 gap-8 md:gap-12">
+                    <div class="bg-surface p-6 md:p-8 rounded-xl shadow-md border-l-4 border-primary">
+                        <h3 class="text-lg md:text-xl font-bold mb-6 flex items-center gap-2 text-primary"><i class="fas fa-users text-secondary"></i> Organizing Team</h3>
+                        <ul class="space-y-3 text-sm text-gray-700 h-80 overflow-y-auto pr-2 custom-scrollbar">
+                            <li class="pb-2 border-b border-amber-100">Prof. Atul Khanna</li>
+                            <li class="pb-2 border-b border-amber-100">Prof. K. J Singh</li>
+                            <li class="pb-2 border-b border-amber-100">Dr. Anupinder Singh</li>
+                            <li class="pb-2 border-b border-amber-100">Dr. Sukhdeep Kaur</li>
+                            <li class="pb-2 border-b border-amber-100">Dr. Bindiya Arora</li>
+                            <li class="pb-2 border-b border-amber-100">Dr. Paramjit Kaur</li>
+                            <li class="pb-2 border-b border-amber-100">Dr. Harjeet Kaur</li>
+                            <li class="pb-2 border-b border-amber-100">Dr. Mandeep Singh</li>
+                            <li class="pb-2 border-b border-amber-100">Dr. Neeraj Bansal</li>
+                            <li class="pb-2 border-b border-amber-100">Dr. Harpreet Singh</li>
+                            <li class="pb-2 border-b border-amber-100">Dr. Karamveer Kaur</li>
+                            <li class="pb-2 border-b border-amber-100">Prof. N. P. S. Saini</li>
+                        </ul>
                     </div>
-                    <div id="cardGrid" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6"></div>
+                    <div class="bg-surface p-6 md:p-8 rounded-xl shadow-md border-l-4 border-secondary">
+                        <h3 class="text-lg md:text-xl font-bold mb-6 flex items-center gap-2 text-primary"><i class="fas fa-globe-asia text-secondary"></i> Advisory Committee</h3>
+                        <ul class="space-y-3 text-sm text-gray-700 h-80 overflow-y-auto pr-2 custom-scrollbar">
+                            <li class="pb-2 border-b border-amber-100">Prof. D K Aswal, Member, National Disaster Management Authority, Government of India</li>
+                            <li class="pb-2 border-b border-amber-100">Prof. Mohamed M. Chehimi, Université de Paris, France</li>
+                            <li class="pb-2 border-b border-amber-100">Prof. Anindya Datta, INST Mohali</li>
+                            <li class="pb-2 border-b border-amber-100">Prof. Rajeev Ahuja, Director, IIT Ropar</li>
+                            <li class="pb-2 border-b border-amber-100">Prof. Arvind, IISER Mohali</li>
+                            <li class="pb-2 border-b border-amber-100">Prof. Awadhesh Mani, IGCAR Kalpakkam</li>
+                            <li class="pb-2 border-b border-amber-100">Prof. Ambesh Dixit, IIT Jodhpur</li>
+                            <li class="pb-2 border-b border-amber-100">Prof. B.S. Murty, Director, IIT Hyderabad</li>
+                            <li class="pb-2 border-b border-amber-100">Dr. Davinder Pal Sharma, University of the West Indies, West Indies</li>
+                            <li class="pb-2 border-b border-amber-100">Dr. Devarani Devi, IUAC, New Delhi</li>
+                            <li class="pb-2 border-b border-amber-100">Prof. Deshdeep Sehdev, IIT Kanpur</li>
+                            <li class="pb-2 border-b border-amber-100">Dr. Dinesh Pathak, University of West Indies, West Indies</li>
+                            <li class="pb-2 border-b border-amber-100">Prof. Kartik Ghosh, Missouri State University, Springfield, USA</li>
+                            <li class="pb-2 border-b border-amber-100">Prof. Kanishka Biswas, JNCASR Bengaluru</li>
+                            <li class="pb-2 border-b border-amber-100">Prof. Kavita Dorai, IISER Mohali</li>
+                            <li class="pb-2 border-b border-amber-100">Prof. M.A. More, Savitribai Phule Pune University, Pune</li>
+                            <li class="pb-2 border-b border-amber-100">Dr. Mandeep Singh, University of Brescia, Italy</li>
+                            <li class="pb-2 border-b border-amber-100">Prof. Manish K. Kashyap, Jawaharlal Nehru University, New Delhi</li>
+                            <li class="pb-2 border-b border-amber-100">Prof. Satyabrata Patnaik, Jawaharlal Nehru University, New Delhi</li>
+                            <li class="pb-2 border-b border-amber-100">Prof. M. Navaneethan, SRM Institute of Science and Technology, Chennai </li>
+                            <li class="pb-2 border-b border-amber-100">Prof. Nandu B. Chaure, Savitribai Phule Pune University, Pune</li>
+                            <li class="pb-2 border-b border-amber-100">Dr. Pabitra Nayak, TIFR Hyderabad</li>
+                            <li class="pb-2 border-b border-amber-100">Prof. Ramesh Chandra, IIT Roorkee</li>
+                            <li class="pb-2 border-b border-amber-100">Prof. Rajesh V. Nair, IIT Ropar, Rupnagar</li>
+                            <li class="pb-2 border-b border-amber-100">Prof. Vasant Sathe, UGC- DAE Indore</li>
+                            <li class="pb-2 border-b border-amber-100">Prof. Shikha Varma, IOP Bhubaneswar, IUAC, New Delhi</li>
+                            <li class="pb-2 border-b border-amber-100">Prof. Satyabrata Patnaik, Jawaharlal Nehru University, New Delhi</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
-
-        </main>
+        </section>
     </div>
 
-    <div id="previewModal" class="fixed inset-0 z-[60] hidden" aria-labelledby="modal-title" role="dialog"
-        aria-modal="true">
-        <div class="fixed inset-0 bg-gray-900 bg-opacity-75 transition-opacity backdrop-blur-sm"
-            onclick="closePreview()"></div>
-        <div class="fixed inset-0 z-10 overflow-y-auto">
-            <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-                <div
-                    class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-4xl h-[85vh] flex flex-col">
-                    <div class="bg-gray-50 px-4 py-3 flex justify-between items-center border-b border-gray-200">
-                        <h3 class="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                            <i class="fas fa-eye text-primary"></i> Document Preview
-                        </h3>
-                        <div class="flex items-center gap-2">
-                            <a id="downloadBtn" href="#" target="_blank"
-                                class="text-sm bg-primary text-white px-3 py-1.5 rounded hover:bg-blue-900 transition">
-                                <i class="fas fa-download"></i> Download
-                            </a>
-                            <button type="button" onclick="closePreview()"
-                                class="text-gray-400 hover:text-red-500 transition">
-                                <i class="fas fa-times text-xl"></i>
+    <div id="program-page" class="page-content hidden-page flex-grow">
+        <header class="bg-primary text-white py-4 shadow-md sticky top-0 z-50">
+            <div class="container mx-auto px-4 flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-calendar-check text-secondary text-2xl"></i>
+                    <span class="font-bold text-lg">Conference Program</span>
+                </div>
+                <button onclick="switchPage('main')" class="text-sm bg-secondary text-white px-4 py-2 rounded-lg font-bold hover:bg-amber-600 transition flex items-center gap-2">
+                    <i class="fas fa-arrow-left"></i> Back to Home
+                </button>
+            </div>
+        </header>
+
+        <section class="py-12 px-4 bg-amber-50 border-b border-amber-200">
+            <div class="container mx-auto max-w-6xl">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold text-primary mb-4">Schedule & Program</h2>
+                    <p class="text-gray-600 mb-6">View the detailed timeline of events for EMTSD-2026.</p>
+                    <a href="schedule_emtsd.pdf" download class="inline-block bg-primary text-white hover:bg-amber-900 px-8 py-3 rounded-full font-bold shadow-lg transition transform hover:-translate-y-1">
+                        <i class="fas fa-download mr-2"></i> Download Schedule PDF
+                    </a>
+                </div>
+                <div class="bg-white p-2 md:p-4 rounded-xl shadow-xl border border-amber-200 h-[800px]">
+                    <iframe src="schedule_emtsd.pdf" class="w-full h-full rounded-lg border-none" title="Conference Schedule">
+                        <p class="text-center py-20 text-gray-500">Your browser does not support PDF previews.<br><a href="schedule_emtsd.pdf" class="text-secondary font-bold underline">Click here to download the schedule.</a></p>
+                    </iframe>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div id="abstract-page" class="page-content hidden-page flex-grow">
+        <header class="bg-primary text-white py-4 shadow-md sticky top-0 z-50">
+            <div class="container mx-auto px-4 flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-file-alt text-secondary text-2xl"></i>
+                    <span class="font-bold text-lg">Abstract Submission</span>
+                </div>
+                <button onclick="switchPage('main')" class="text-sm bg-secondary text-white px-4 py-2 rounded-lg font-bold hover:bg-amber-600 transition flex items-center gap-2">
+                    <i class="fas fa-arrow-left"></i> Back to Home
+                </button>
+            </div>
+        </header>
+
+        <section class="py-12 px-4 bg-amber-50 border-b border-amber-200 min-h-[60vh] flex items-center justify-center">
+            <div class="container mx-auto max-w-2xl">
+                <div class="bg-white p-10 rounded-xl shadow-xl border-t-8 border-red-600 text-center">
+                    <div class="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-lock text-4xl text-red-600"></i>
+                    </div>
+                    <h2 class="text-3xl font-bold text-gray-800 mb-4">Submission Closed</h2>
+                    <p class="text-lg text-gray-600 mb-8">
+                        The deadline for abstract submission was <strong>February 15, 2026</strong>. 
+                        <br>We are no longer accepting new abstracts for EMTSD-2026.
+                    </p>
+                    <div class="bg-gray-50 p-6 rounded-lg border border-gray-200">
+                        <p class="text-sm text-gray-500 font-semibold mb-2">Have a question?</p>
+                        <a href="mailto:emtsd2026@gmail.com" class="text-primary hover:text-secondary font-bold text-lg flex justify-center items-center gap-2">
+                            <i class="fas fa-envelope"></i> emtsd2026@gmail.com
+                        </a>
+                    </div>
+                    <button onclick="switchPage('main')" class="mt-8 text-gray-500 hover:text-primary font-semibold underline">
+                        Return to Homepage
+                    </button>
+                </div>
+                </div>
+        </section>
+    </div>
+
+
+    <div id="registration-page" class="page-content hidden-page flex-grow">
+        <header class="bg-primary text-white py-4 shadow-md sticky top-0 z-50">
+            <div class="container mx-auto px-4 flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-user-plus text-secondary text-2xl"></i>
+                    <span class="font-bold text-lg">Conference Registration</span>
+                </div>
+                <button onclick="switchPage('main')" class="text-sm bg-secondary text-white px-4 py-2 rounded-lg font-bold hover:bg-amber-600 transition flex items-center gap-2">
+                    <i class="fas fa-arrow-left"></i> Back to Home
+                </button>
+            </div>
+        </header>
+
+        <section class="py-12 px-4 bg-amber-50 border-b border-amber-200">
+            <div class="container mx-auto max-w-4xl">
+                <div class="bg-white rounded-2xl shadow-xl p-6 md:p-8 border border-amber-200">
+                    <div class="text-center mb-8">
+                        <h2 class="text-2xl font-bold text-primary">Register for EMTSD-2026</h2>
+                        <h3 style="color:red">Deadline: February 15, 2026</h3>
+                        <h4 style="color:red">Registration for students participating in posters/oral presentations is completely free. No financial support in the form of travel allowance (TA) or accommodation will be provided. </h4>
+                        <p class="text-gray-500 text-sm mt-1">Please fill in your details below.</p>
+                    </div>
+                    <form id="registrationForm" class="space-y-5">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Full Name</label>
+                            <input type="text" id="regName" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-secondary focus:ring-2 focus:ring-secondary/20 outline-none transition bg-stone-50" placeholder="Dr./Mr./Ms. Full Name">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Designation</label>
+                            <input type="text" id="regDesignation" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-secondary focus:ring-2 focus:ring-secondary/20 outline-none transition bg-stone-50" placeholder="e.g. Assistant Professor, PhD Scholar, Student">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Affiliation / Institute</label>
+                            <input type="text" id="regAffiliation" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-secondary focus:ring-2 focus:ring-secondary/20 outline-none transition bg-stone-50" placeholder="e.g. Department of Physics, GNDU Amritsar">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Email Address</label>
+                            <input type="email" id="regEmail" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-secondary focus:ring-2 focus:ring-secondary/20 outline-none transition bg-stone-50" placeholder="your.email@example.com">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Phone Number</label>
+                            <input type="tel" id="regPhone" required pattern="[0-9+\s\-]{8,15}" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-secondary focus:ring-2 focus:ring-secondary/20 outline-none transition bg-stone-50" placeholder="+91 XXXXXXXXXX">
+                        </div>
+                        <div class="bg-stone-50 p-4 rounded-lg border border-stone-200">
+                            <label class="block text-sm font-bold text-primary mb-3">Participating As:</label>
+                            <div class="flex flex-col sm:flex-row gap-4">
+                                <label class="flex items-center gap-2 cursor-pointer group">
+                                    <input type="radio" name="participation_type" value="Presenter" required class="w-5 h-5 text-secondary focus:ring-secondary border-gray-300">
+                                    <span class="text-gray-700 font-medium group-hover:text-primary transition">Presenter</span>
+                                </label>
+                                <label class="flex items-center gap-2 cursor-pointer group">
+                                    <input type="radio" name="participation_type" value="Attendant" required class="w-5 h-5 text-secondary focus:ring-secondary border-gray-300">
+                                    <span class="text-gray-700 font-medium group-hover:text-primary transition">Attendant (Listener only)</span>
+                                </label>
+                            </div>
+                            <div id="paperTitleContainer" class="hidden mt-4 pt-4 border-t border-stone-200 animate-fade-in">
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Paper Title <span class="text-red-500">*</span></label>
+                                <input type="text" id="regPaperTitle" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-secondary focus:ring-2 focus:ring-secondary/20 outline-none transition bg-white" placeholder="Enter the title of your paper">
+                                <p class="text-xs text-gray-500 mt-1">Please provide the exact title of the paper you will be presenting.</p>
+                            </div>
+                        </div>
+                        <div class="pt-4">
+                            <button type="submit" id="regSubmitBtn" class="w-full bg-amber-600 hover:bg-amber-500 text-white font-bold py-3 md:py-4 rounded-lg transition shadow-lg flex items-center justify-center gap-2 text-lg">
+                                <i class="fas fa-check-circle"></i> <span id="regBtnText">Confirm Registration</span>
                             </button>
                         </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div id="travel-page" class="page-content hidden-page flex-grow">
+        <header class="bg-primary text-white py-4 shadow-md sticky top-0 z-50">
+            <div class="container mx-auto px-4 flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-map-marked-alt text-secondary text-2xl"></i>
+                    <span class="font-bold text-lg">Amritsar Travel Guide</span>
+                </div>
+                <button onclick="switchPage('main')" class="text-sm bg-secondary text-white px-4 py-2 rounded-lg font-bold hover:bg-amber-600 transition flex items-center gap-2">
+                    <i class="fas fa-arrow-left"></i> Back to Home
+                </button>
+            </div>
+        </header>
+
+        <section class="py-12 px-4">
+            <div class="container mx-auto max-w-5xl">
+                <div class="text-center mb-10">
+                    <h1 class="text-3xl font-bold text-primary mb-3">How to Reach GNDU</h1>
+                    <p class="text-gray-600">Guru Nanak Dev University is located on the Grand Trunk Road (NH1), well-connected to all major transit points.</p>
+                    <div class="w-16 h-1 bg-secondary mx-auto mt-4"></div>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-secondary hover:-translate-y-1 transition duration-300">
+                        <div class="w-12 h-12 bg-stone-100 rounded-full flex items-center justify-center text-primary mb-4 mx-auto"><i class="fas fa-plane text-2xl"></i></div>
+                        <h3 class="font-bold text-lg text-center mb-2">From Airport</h3>
+                        <p class="text-xs text-gray-400 text-center font-bold uppercase mb-4">Sri Guru Ram Dass Jee Intl. Airport</p>
+                        <ul class="text-sm text-gray-600 space-y-2">
+                            <li class="flex justify-between border-b border-gray-100 pb-1"><span>Distance:</span> <span class="font-semibold">~11 km</span></li>
+                            <li class="flex justify-between border-b border-gray-100 pb-1"><span>Time:</span> <span class="font-semibold">20-25 Mins</span></li>
+                            <li class="pt-2"><span class="block font-semibold mb-1 text-primary">Transport:</span> Prepaid taxis, Uber, and Ola are easily available at the terminal.</li>
+                        </ul>
                     </div>
-                    <div class="flex-grow bg-gray-200 relative">
-                        <div id="previewLoader" class="absolute inset-0 flex items-center justify-center">
-                            <i class="fas fa-spinner fa-spin text-3xl text-gray-400"></i>
+                    <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-primary hover:-translate-y-1 transition duration-300">
+                        <div class="w-12 h-12 bg-stone-100 rounded-full flex items-center justify-center text-primary mb-4 mx-auto"><i class="fas fa-train text-2xl"></i></div>
+                        <h3 class="font-bold text-lg text-center mb-2">From Railway Station</h3>
+                        <p class="text-xs text-gray-400 text-center font-bold uppercase mb-4">Amritsar Junction (ASR)</p>
+                        <ul class="text-sm text-gray-600 space-y-2">
+                            <li class="flex justify-between border-b border-gray-100 pb-1"><span>Distance:</span> <span class="font-semibold">~4-5 km</span></li>
+                            <li class="flex justify-between border-b border-gray-100 pb-1"><span>Time:</span> <span class="font-semibold">10-15 Mins</span></li>
+                            <li class="pt-2"><span class="block font-semibold mb-1 text-primary">Transport:</span> Auto-rickshaws and E-rickshaws are plentiful outside the station.</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-secondary hover:-translate-y-1 transition duration-300">
+                        <div class="w-12 h-12 bg-stone-100 rounded-full flex items-center justify-center text-primary mb-4 mx-auto"><i class="fas fa-bus text-2xl"></i></div>
+                        <h3 class="font-bold text-lg text-center mb-2">From Bus Stand</h3>
+                        <p class="text-xs text-gray-400 text-center font-bold uppercase mb-4">ISBT Amritsar</p>
+                        <ul class="text-sm text-gray-600 space-y-2">
+                            <li class="flex justify-between border-b border-gray-100 pb-1"><span>Distance:</span> <span class="font-semibold">~5-6 km</span></li>
+                            <li class="flex justify-between border-b border-gray-100 pb-1"><span>Time:</span> <span class="font-semibold">15-20 Mins</span></li>
+                            <li class="pt-2"><span class="block font-semibold mb-1 text-primary">Transport:</span> Local buses and auto-rickshaws connect ISBT directly to GNDU Gate.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-amber-50 py-12 px-4">
+            <div class="container mx-auto max-w-5xl">
+                <div class="text-center mb-10">
+                    <h2 class="text-3xl font-bold text-primary mb-3">Explore Amritsar</h2>
+                    <p class="text-gray-600">Experience the spiritual and historical heart of Punjab.</p>
+                    <div class="w-16 h-1 bg-secondary mx-auto mt-4"></div>
+                </div>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-white rounded-lg overflow-hidden shadow-sm flex flex-col md:flex-row group h-auto md:h-48">
+                        <div class="md:w-2/5 h-48 md:h-full overflow-hidden relative">
+                            <img src="https://www.tallengestore.com/cdn/shop/files/GoldenTemple_SriHarmandirSahib_Amritsar-SikhHoliestShrine_d521ac95-49f8-4c34-8380-50af14b6e562.jpg?v=1729751147" alt="Golden Temple" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
                         </div>
-                        <iframe id="docFrame" class="w-full h-full" frameborder="0"></iframe>
+                        <div class="p-6 md:w-3/5 flex flex-col justify-center">
+                            <h3 class="font-bold text-xl text-primary mb-2">Golden Temple</h3>
+                            <p class="text-sm text-gray-600 mb-3 line-clamp-3">Sri Harmandir Sahib is the holiest Gurdwara of Sikhism. It is famous for its full golden dome and the holy Sarovar.</p>
+                            <span class="text-xs font-bold text-secondary uppercase tracking-wide">~9 km from Venue</span>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg overflow-hidden shadow-sm flex flex-col md:flex-row group h-auto md:h-48">
+                        <div class="md:w-2/5 h-48 md:h-full overflow-hidden relative">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Jallianwala_Bagh_Bullet_Marked_Wall.JPG/500px-Jallianwala_Bagh_Bullet_Marked_Wall.JPG" alt="Jallianwala Bagh" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                        </div>
+                        <div class="p-6 md:w-3/5 flex flex-col justify-center">
+                            <h3 class="font-bold text-xl text-primary mb-2">Jallianwala Bagh</h3>
+                            <p class="text-sm text-gray-600 mb-3 line-clamp-3">A historic garden and memorial of national importance, preserved in the memory of those wounded and killed in the 1919 massacre.</p>
+                            <span class="text-xs font-bold text-secondary uppercase tracking-wide">Near Golden Temple</span>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg overflow-hidden shadow-sm flex flex-col md:flex-row group h-auto md:h-48">
+                        <div class="md:w-2/5 h-48 md:h-full overflow-hidden relative">
+                            <img src="https://visitplacesindia.com/wp-content/uploads/2024/11/wagah-border-amritsar.jpg" alt="Wagah Border" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                        </div>
+                        <div class="p-6 md:w-3/5 flex flex-col justify-center">
+                            <h3 class="font-bold text-xl text-primary mb-2">Wagah Border</h3>
+                            <p class="text-sm text-gray-600 mb-3 line-clamp-3">Famous for the daily beating retreat ceremony held before sunset. It is the international border between India and Pakistan.</p>
+                            <span class="text-xs font-bold text-secondary uppercase tracking-wide">~30 km from Venue</span>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg overflow-hidden shadow-sm flex flex-col md:flex-row group h-auto md:h-48">
+                        <div class="md:w-2/5 h-48 md:h-full overflow-hidden relative">
+                            <img src="https://static.toiimg.com/photo/50999042/.jpg" alt="Durgiana Temple" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                        </div>
+                        <div class="p-6 md:w-3/5 flex flex-col justify-center">
+                            <h3 class="font-bold text-xl text-primary mb-2">Durgiana Temple</h3>
+                            <p class="text-sm text-gray-600 mb-3 line-clamp-3">A premier Hindu temple of Punjab situated in the city of Amritsar. Its architecture is similar to the Golden Temple.</p>
+                            <span class="text-xs font-bold text-secondary uppercase tracking-wide">~5 km from Venue</span>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg overflow-hidden shadow-sm flex flex-col md:flex-row group h-auto md:h-48">
+                        <div class="md:w-2/5 h-48 md:h-full overflow-hidden relative">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/Amritsar_9125.jpg/2560px-Amritsar_9125.jpg" alt="Partition Museum" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                        </div>
+                        <div class="p-6 md:w-3/5 flex flex-col justify-center">
+                            <h3 class="font-bold text-xl text-primary mb-2">The Partition Museum</h3>
+                            <p class="text-sm text-gray-600 mb-3 line-clamp-3">The world's first Museum dedicated to the Partition of 1947, located in the historic Town Hall building.</p>
+                            <span class="text-xs font-bold text-secondary uppercase tracking-wide">~7 km from Venue</span>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg overflow-hidden shadow-sm flex flex-col md:flex-row group h-auto md:h-48">
+                        <div class="md:w-2/5 h-48 md:h-full overflow-hidden relative">
+                            <img src="https://s7ap1.scene7.com/is/image/incredibleindia/ram-tirath-temple-amritsar-punjab-1-attr-hero?qlt=82&ts=1726662143888" alt="Ram Tirath" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                        </div>
+                        <div class="p-6 md:w-3/5 flex flex-col justify-center">
+                            <h3 class="font-bold text-xl text-primary mb-2">Bhagwan Valmiki Tirath</h3>
+                            <p class="text-sm text-gray-600 mb-3 line-clamp-3">An ancient and sacred temple complex believed to be the ashram of Sage Valmiki. Features a stunning gold-plated idol.</p>
+                            <span class="text-xs font-bold text-secondary uppercase tracking-wide">~6 km from Venue</span>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
     </div>
 
-    <div id="debugModal" class="fixed inset-0 z-[70] hidden" role="dialog" aria-modal="true">
-        <div class="fixed inset-0 bg-gray-900 bg-opacity-80 transition-opacity" onclick="closeDebug()"></div>
-        <div class="fixed inset-0 z-10 overflow-y-auto">
-            <div class="flex min-h-full items-center justify-center p-4">
-                <div class="bg-white rounded-lg shadow-2xl w-full max-w-2xl p-6 relative">
-                    <button onclick="closeDebug()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
-                        <i class="fas fa-times text-xl"></i>
-                    </button>
-                    <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                        <i class="fas fa-bug text-red-500"></i> Raw Database Entry
-                    </h3>
-                    <p class="text-sm text-gray-500 mb-4">This is the exact data stored in Firebase for this entry. Use the keys shown here to verify what is missing.</p>
-                    <pre id="debugContent" class="bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto text-xs font-mono"></pre>
-                    <div class="mt-4 flex justify-end">
-                        <button onclick="closeDebug()" class="bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300 font-bold text-sm">Close</button>
+    <div id="accommodation-page" class="page-content hidden-page flex-grow">
+        <header class="bg-primary text-white py-4 shadow-md sticky top-0 z-50">
+            <div class="container mx-auto px-4 flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-bed text-secondary text-2xl"></i>
+                    <span class="font-bold text-lg">Accommodation</span>
+                </div>
+                <button onclick="switchPage('main')" class="text-sm bg-secondary text-white px-4 py-2 rounded-lg font-bold hover:bg-amber-600 transition flex items-center gap-2">
+                    <i class="fas fa-arrow-left"></i> Back to Home
+                </button>
+            </div>
+        </header>
+
+        <section class="py-12 px-4 bg-amber-50">
+            <div class="container mx-auto max-w-4xl">
+                <div class="bg-white p-8 rounded-xl shadow-md border-t-4 border-secondary">
+                    <h2 class="text-2xl font-bold text-primary mb-6">Accommodation Details</h2>
+                    <p class="text-gray-700 leading-relaxed mb-4 text-lg">
+                        Limited University Guest House Accommodation will be available to participants coming for oral/ poster presentation as per university charges.
+                    </p>
+                    <div class="bg-orange-50 border-l-4 border-orange-500 p-4 mb-6">
+                        <p class="font-bold text-orange-800">Note: It will be booked on the basis of First Come, First Served.</p>
+                    </div>
+                    <div class="flex items-center gap-2 text-gray-700 mt-4">
+                        <i class="fas fa-envelope text-primary"></i>
+                        <span>Send request accordingly at conference email address at the earliest:</span>
+                        <a href="mailto:emtsd2026@gmail.com" class="font-bold text-primary hover:underline hover:text-secondary transition">emtsd2026@gmail.com</a>
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
     </div>
 
+    <footer id="contact" class="bg-accent text-gray-400 py-12 border-t border-amber-950 mt-auto">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-3 gap-8 text-center md:text-left">
+                <div>
+                    <h4 class="text-white font-bold text-lg mb-4">EMTSD-2026</h4>
+                    <p class="text-sm mb-4">International Conference on Emerging Materials and Technologies for Sustainable Development.</p>
+                    <div class="flex space-x-4 justify-center md:justify-start">
+                        <a href="https://www.linkedin.com/company/department-of-physics-guru-nanak-dev-university-amritsar/posts/" class="hover:text-white transition"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold text-lg mb-4">Contact</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li class="flex items-center gap-2 justify-center md:justify-start"><i class="fas fa-envelope text-secondary"></i><a href="mailto:emtsd2026@gmail.com" class="hover:text-white">emtsd2026@gmail.com</a></li>
+                        <li class="flex items-center gap-2 justify-center md:justify-start"><i class="fas fa-phone text-secondary"></i><a href="tel:+919417932547" class="hover:text-white">+91 94179 32547</a></li>
+                        <li class="flex items-start gap-2 justify-center md:justify-start"><i class="fas fa-map-marker-alt text-secondary mt-1"></i><span>Guru Nanak Dev University,<br>Amritsar, Punjab, India</span></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold text-lg mb-4">Quick Links</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><button onclick="switchPage('main', 'home')" class="hover:text-secondary">Home</button></li>
+                        <li><button onclick="switchPage('registration')" class="hover:text-secondary font-bold text-amber-300">Registration</button></li>
+                        <li><button disabled class="text-gray-500 cursor-not-allowed">Call for Abstract (Closed)</button></li>
+                        <li><button onclick="switchPage('main', 'topics')" class="hover:text-secondary">Topics of Interest</button></li>
+                        <li><a href="https://online.gndu.ac.in/" target="_blank" class="hover:text-secondary">GNDU Official Website</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-amber-900 mt-12 pt-8 text-center text-xs">
+                <p>&copy; 2026 EMTSD. All rights reserved. Department of Physics, GNDU.</p><br>
+                <small><a href="https://www.sitee.in" style="text-decoration:underline;">designed with sitee.</a></small>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function switchPage(pageId, sectionId = null) {
+            const pages = ['main-page', 'abstract-page', 'travel-page', 'registration-page', 'accommodation-page', 'program-page'];
+            const targetPage = document.getElementById(pageId + '-page');
+
+            if (!targetPage) return;
+
+            pages.forEach(pid => {
+                const el = document.getElementById(pid);
+                if (el) {
+                    el.classList.add('hidden-page');
+                    el.classList.remove('flex-grow');
+                }
+            });
+
+            targetPage.classList.remove('hidden-page');
+            targetPage.classList.add('flex-grow');
+
+            if (sectionId) {
+                setTimeout(() => {
+                    const section = document.getElementById(sectionId);
+                    if (section) section.scrollIntoView({ behavior: 'smooth' });
+                }, 100);
+            } else {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            if (pageId !== 'main') {
+                updateActiveLink(pageId, null);
+            } else if (!sectionId) {
+                updateActiveLink('main', 'home');
+            }
+        }
+
+        function toggleMobileMenu() {
+            document.getElementById('mobile-menu').classList.add('hidden');
+        }
+
+        function updateActiveLink(pageId, sectionId) {
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                const isPageMatch = link.getAttribute('data-page') === pageId;
+                const isSectionMatch = !sectionId || link.getAttribute('data-section') === sectionId;
+                if (isPageMatch && (link.getAttribute('data-page') !== 'main' || isSectionMatch)) {
+                    link.classList.add('nav-active');
+                } else {
+                    link.classList.remove('nav-active');
+                }
+            });
+        }
+
+        const observerOptions = { root: null, rootMargin: '0px', threshold: 0.3 };
+        const observer = new IntersectionObserver((entries) => {
+            if (document.getElementById('main-page').classList.contains('hidden-page')) return;
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.getAttribute('id');
+                    updateActiveLink('main', id);
+                }
+            });
+        }, observerOptions);
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const hash = window.location.hash.substring(1);
+            const validPages = ['program', 'abstract', 'travel', 'registration', 'accommodation'];
+
+            if (validPages.includes(hash)) {
+                switchPage(hash);
+            } else if (hash && document.getElementById(hash)) {
+                switchPage('main', hash);
+            } else {
+                switchPage('main');
+            }
+
+            const sections = document.querySelectorAll('section[id]');
+            sections.forEach(section => observer.observe(section));
+
+            const participationRadios = document.querySelectorAll('input[name="participation_type"]');
+            const paperTitleContainer = document.getElementById('paperTitleContainer');
+            const paperTitleInput = document.getElementById('regPaperTitle');
+
+            participationRadios.forEach(radio => {
+                radio.addEventListener('change', (e) => {
+                    if (e.target.value === 'Presenter') {
+                        paperTitleContainer.classList.remove('hidden');
+                        paperTitleInput.setAttribute('required', 'true');
+                    } else {
+                        paperTitleContainer.classList.add('hidden');
+                        paperTitleInput.removeAttribute('required');
+                        paperTitleInput.value = '';
+                    }
+                });
+            });
+        });
+    </script>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, get, child, update, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
+        import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-        // 1. Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyB4eoofAdY4DrW-VKvfGJl5aNv2hoCTn4c",
             authDomain: "iist-fd6e8.firebaseapp.com",
@@ -278,629 +808,62 @@
         };
 
         const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
         const db = getDatabase(app);
 
-        // State Management
-        let acceptedEmailsList = [];
-        let globalDataCache = []; 
-        let currentView = 'abstracts'; 
-
-        // 2. Auth Logic
-        const loginForm = document.getElementById('loginForm');
-        const loginSection = document.getElementById('loginSection');
-        const dashboardSection = document.getElementById('dashboardSection');
-
-        loginForm.addEventListener('submit', (e) => {
+        // Registration form submission logic only
+        document.getElementById('registrationForm').addEventListener('submit', async function (e) {
             e.preventDefault();
-            const password = document.getElementById('passwordInput').value;
-            if (password === "gndu26") {
-                loginSection.classList.add('hidden');
-                dashboardSection.classList.remove('hidden');
-                fetchData();
-            } else {
-                showToast("Access Denied: Incorrect Password", "error");
-                document.getElementById('passwordInput').value = '';
-            }
-        });
-
-        window.logout = function () {
-            if (confirm("Logout from admin panel?")) location.reload();
-        }
-
-        // 3. View Switcher
-        window.switchView = function (view) {
-            currentView = view;
-            const btnAbs = document.getElementById('btnAbstracts');
-            const btnReg = document.getElementById('btnRegistrations');
-
-            if (view === 'abstracts') {
-                btnAbs.className = "px-4 py-1.5 rounded-md text-sm font-bold transition shadow-sm flex items-center gap-2 tab-active";
-                btnReg.className = "px-4 py-1.5 rounded-md text-sm font-bold transition flex items-center gap-2 tab-inactive";
-                document.getElementById('pageTitle').innerText = "Manage Abstracts";
-            } else {
-                btnReg.className = "px-4 py-1.5 rounded-md text-sm font-bold transition shadow-sm flex items-center gap-2 tab-active";
-                btnAbs.className = "px-4 py-1.5 rounded-md text-sm font-bold transition flex items-center gap-2 tab-inactive";
-                document.getElementById('pageTitle').innerText = "General Registrations";
-            }
-            fetchData();
-        }
-
-        // 4. Fetch Data with Robust Search & Filters
-        async function fetchData() {
-            // UI Spinning for Refresh
-            const refreshIcon = document.getElementById('refreshIcon');
-            refreshIcon.classList.add('animate-spin-slow');
-
-            const loader = document.getElementById('loader');
-            const mainContainer = document.getElementById('mainContainer');
-            const empty = document.getElementById('emptyState');
-            const acceptedSection = document.getElementById('acceptedSection');
-            const acceptedGrid = document.getElementById('acceptedGrid');
-            const regularGrid = document.getElementById('cardGrid');
-            const pendingHeader = document.getElementById('pendingHeader');
-            const totalCount = document.getElementById('totalCount');
-            const acceptedCountEl = document.getElementById('acceptedCount');
-            const pendingCountEl = document.getElementById('pendingCount');
-
-            // Reset UI
-            mainContainer.classList.add('hidden');
-            empty.classList.add('hidden');
-            acceptedSection.classList.add('hidden');
-            pendingHeader.classList.add('hidden');
-            if (!mainContainer.classList.contains('hidden')) loader.classList.remove('hidden'); // Show loader if first load
-
-            acceptedGrid.innerHTML = "";
-            regularGrid.innerHTML = "";
-            acceptedEmailsList = [];
-            globalDataCache = [];
+            const btn = document.getElementById('regSubmitBtn');
+            const btnText = document.getElementById('regBtnText');
+            const originalText = btnText.innerText;
+            btn.disabled = true;
+            btnText.innerText = "Processing...";
+            btn.classList.add('opacity-75', 'cursor-not-allowed');
 
             try {
-                const dbRef = ref(db);
-                const nodeName = currentView === 'abstracts' ? 'registrations' : 'conference_registrations';
-                const snapshot = await get(child(dbRef, nodeName));
+                const name = document.getElementById('regName').value;
+                const designation = document.getElementById('regDesignation').value;
+                const affiliation = document.getElementById('regAffiliation').value;
+                const email = document.getElementById('regEmail').value;
+                const phone = document.getElementById('regPhone').value;
+                const participationType = document.querySelector('input[name="participation_type"]:checked').value;
+                const paperTitle = document.getElementById('regPaperTitle').value;
 
-                loader.classList.add('hidden');
-                refreshIcon.classList.remove('animate-spin-slow'); // Stop spin
-
-                if (snapshot.exists()) {
-                    const data = snapshot.val();
-                    let entries = Object.entries(data);
-
-                    // --- FILTERING LOGIC ---
-                    let validEntries = [];
-                    entries.forEach(([key, val]) => {
-                        // 1. Check Essential Info
-                        const name = smartFind(val, ['fullName', 'name', 'Name']);
-                        const email = smartFind(val, ['email', 'Email']);
-                        const hasEssential = (name && email);
-
-                        // 2. Count Missing Fields
-                        let missingCount = 0;
-                        if (!name) missingCount++;
-                        if (!email) missingCount++;
-                        if (!smartFind(val, ['phone', 'Phone'])) missingCount++;
-                        if (!smartFind(val, ['affiliation', 'Affiliation'])) missingCount++;
-                        
-                        if (currentView === 'abstracts') {
-                            if (!smartFind(val, ['paperTitle', 'title'])) missingCount++;
-                            if (!smartFind(val, ['abstractText', 'abstract'])) missingCount++;
-                        }
-
-                        // 3. Hide Rule: If >3 missing AND doesn't have essential Name+Email
-                        if (missingCount > 3 && !hasEssential) {
-                            return; // Skip this entry (Hide)
-                        }
-
-                        validEntries.push([key, val, missingCount]);
-                    });
-
-                    globalDataCache = validEntries;
-                    totalCount.innerText = validEntries.length;
-
-                    if (validEntries.length > 0) {
-                        mainContainer.classList.remove('hidden');
-
-                        if (currentView === 'abstracts') {
-                            // Find Status Key (also flexible)
-                            const findStatus = (v) => smartFind(v, ['status', 'Status', 'state']) || 'pending';
-
-                            const acceptedEntries = validEntries.filter(([k, v]) => findStatus(v) === 'accepted');
-                            const otherEntries = validEntries.filter(([k, v]) => findStatus(v) !== 'accepted');
-
-                            // Sort
-                            const getId = (v) => {
-                                const id = smartFind(v, ['abstractId', 'id', 'ID']) || "A0";
-                                return parseInt(id.replace(/[^0-9]/g, '')) || 0;
-                            };
-                            acceptedEntries.sort((a, b) => getId(b[1]) - getId(a[1]));
-
-                            // Render Accepted
-                            if (acceptedEntries.length > 0) {
-                                acceptedSection.classList.remove('hidden');
-                                acceptedCountEl.innerText = acceptedEntries.length;
-                                acceptedEntries.forEach(([key, val, missingCount]) => {
-                                    const email = smartFind(val, ['email', 'Email']);
-                                    if(email) acceptedEmailsList.push(email);
-                                    acceptedGrid.innerHTML += createAbstractCard(key, val, missingCount);
-                                });
-                            }
-
-                            // Render Others
-                            if (otherEntries.length > 0) {
-                                pendingHeader.classList.remove('hidden');
-                                pendingCountEl.innerText = otherEntries.length;
-                                otherEntries.reverse().forEach(([key, val, missingCount]) => {
-                                    regularGrid.innerHTML += createAbstractCard(key, val, missingCount);
-                                });
-                            }
-                            if (acceptedEntries.length === 0) acceptedSection.classList.add('hidden');
-
-                        } else {
-                            // Registrations View
-                            acceptedSection.classList.add('hidden');
-                            pendingHeader.classList.add('hidden');
-                            validEntries.reverse().forEach(([key, val, missingCount]) => {
-                                const email = smartFind(val, ['email', 'Email']);
-                                if(email) acceptedEmailsList.push(email);
-                                regularGrid.innerHTML += createRegistrationCard(key, val, missingCount);
-                            });
-                        }
-                    } else {
-                        empty.classList.remove('hidden');
-                    }
-                } else {
-                    empty.classList.remove('hidden');
-                    totalCount.innerText = "0";
+                if (participationType === 'Presenter' && !paperTitle.trim()) {
+                    throw new Error("Paper Title is required for presenters.");
                 }
+
+                const newRegRef = push(ref(db, 'conference_registrations'));
+                const regData = {
+                    fullName: name,
+                    designation: designation,
+                    affiliation: affiliation,
+                    email: email,
+                    phone: phone,
+                    type: participationType,
+                    submittedAt: new Date().toISOString()
+                };
+
+                if (participationType === 'Presenter') {
+                    regData.paperTitle = paperTitle;
+                }
+
+                await set(newRegRef, regData);
+                alert("Registration Successful! \nWe look forward to seeing you at EMTSD-2026.");
+                document.getElementById('registrationForm').reset();
+                document.getElementById('paperTitleContainer').classList.add('hidden');
+                switchPage('main');
+
             } catch (error) {
-                loader.classList.add('hidden');
-                refreshIcon.classList.remove('animate-spin-slow');
-                showToast("Database Connection Failed", "error");
-                console.error(error);
+                console.error("Error:", error);
+                alert("Registration failed. Please check your internet connection and try again.\nError: " + error.message);
+            } finally {
+                btn.disabled = false;
+                btnText.innerText = originalText;
+                btn.classList.remove('opacity-75', 'cursor-not-allowed');
             }
-        }
-
-        // --- SMART SEARCH ENGINE ---
-        function smartFind(data, candidates) {
-            if (!data) return null;
-            const keys = Object.keys(data);
-            const lowerKeys = keys.map(k => k.toLowerCase());
-            
-            for (let candidate of candidates) {
-                if (data[candidate] && data[candidate] !== 'undefined' && data[candidate] !== 'null') return data[candidate];
-                const index = lowerKeys.indexOf(candidate.toLowerCase());
-                if (index !== -1) {
-                    const realKey = keys[index];
-                    if (data[realKey] && data[realKey] !== 'undefined' && data[realKey] !== 'null') return data[realKey];
-                }
-            }
-            return null;
-        }
-
-        // --- NEW HELPERS FOR COPYING ---
-
-        // 1. Copy Basic Info (Title, Authors, Abstract)
-        window.copyEntryDetails = function(id) {
-            const entry = globalDataCache.find(e => e[0] === id);
-            if (!entry) return showToast("Entry not found", "error");
-            const val = entry[1];
-            
-            const title = smartFind(val, ['paperTitle', 'title', 'Title']) || "No Title";
-            const abstract = smartFind(val, ['abstractText', 'abstract', 'Abstract']) || "No Abstract";
-            const authors = smartFind(val, ['allAuthors', 'authors', 'Authors']) || smartFind(val, ['fullName', 'name']) || "Unknown Author";
-            const absId = smartFind(val, ['abstractId', 'id', 'ID']) || "N/A";
-
-            const textToCopy = `ID: ${absId}\nTitle: ${title}\nAuthors: ${authors}\n\nAbstract:\n${abstract}`;
-            
-            navigator.clipboard.writeText(textToCopy).then(() => {
-                showToast("Abstract details copied!", "success");
-            }).catch(err => showToast("Failed to copy", "error"));
-        }
-
-        // 2. Copy Formal Acceptance Email Template
-        window.copyAcceptanceDraft = function(id) {
-            const entry = globalDataCache.find(e => e[0] === id);
-            if (!entry) return showToast("Entry not found", "error");
-            const val = entry[1];
-            
-            const title = smartFind(val, ['paperTitle', 'title']) || "Untitled";
-            const absId = smartFind(val, ['abstractId', 'id']) || "N/A";
-            const name = smartFind(val, ['fullName', 'name']) || "Author";
-
-            const emailTemplate = `Subject: Acceptance of Abstract ID: ${absId} - IC-EMTSD-2026
-
-Dear ${name},
-
-We are pleased to inform you that your abstract entitled:
-
-"${title}" (ID: ${absId})
-
-has been accepted for presentation at the International Conference on Emerging Trends in Science and Data (IC-EMTSD-2026).
-
-The review committee was impressed by the quality of your submission. We look forward to your valuable contribution to the conference proceedings.
-
-Next Steps:
-1. Please ensure your registration is completed.
-2. Prepare your full presentation slides according to the conference guidelines.
-3. If you have any queries regarding the schedule or venue, please visit our website or contact the organizing committee.
-
-Congratulations once again on your acceptance.
-
-Warm regards,
-
-Organizing Committee
-IC-EMTSD-2026
-Guru Nanak Dev University, Amritsar`;
-
-            navigator.clipboard.writeText(emailTemplate).then(() => {
-                showToast("Acceptance Draft Copied to Clipboard!", "success");
-            }).catch(err => showToast("Failed to copy draft", "error"));
-        }
-
-        // 5a. Abstract Card
-        function createAbstractCard(id, data, missingCount) {
-            const name = smartFind(data, ['fullName', 'name', 'Name', 'username']);
-            const allAuthors = smartFind(data, ['allAuthors', 'authors', 'Authors']);
-            const title = smartFind(data, ['paperTitle', 'title', 'Title']);
-            const abstract = smartFind(data, ['abstractText', 'abstract', 'Abstract']);
-            const email = smartFind(data, ['email', 'Email']);
-            const phone = smartFind(data, ['phone', 'Phone']);
-            const affiliation = smartFind(data, ['affiliation', 'Affiliation']);
-            const abstractId = smartFind(data, ['abstractId', 'id', 'ID']);
-            const fileUrl = smartFind(data, ['fileDownloadUrl', 'file', 'url']);
-            const status = smartFind(data, ['status', 'Status']) || 'pending';
-
-            const dispName = name || 'Unknown Name';
-            const dispTitle = title || 'No Title Provided';
-            const dispAbstract = abstract || 'No abstract content provided.';
-            const dispAffiliation = affiliation || 'No Affiliation';
-            
-            let statusBadge = '';
-            let cardBorder = 'border-slate-200';
-            
-            // Flags
-            let flags = '';
-            if (!abstract || abstract.length < 5) {
-                flags += `<span class="bg-red-50 text-red-600 text-[10px] font-bold px-2 py-0.5 rounded border border-red-200 flex items-center gap-1 mb-1"><i class="fas fa-exclamation-circle"></i> Missing Abstract</span>`;
-            }
-            if (missingCount > 0) {
-                flags += `<span class="bg-orange-50 text-orange-600 text-[10px] font-bold px-2 py-0.5 rounded border border-orange-200 flex items-center gap-1 mb-1"><i class="fas fa-info-circle"></i> Incomplete Data</span>`;
-            }
-
-            let idDisplay = '';
-            if (abstractId) {
-                idDisplay = `<span class="bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded shadow-sm mr-2">ID: ${abstractId}</span>`;
-            }
-
-            if (status === 'accepted') {
-                statusBadge = `<span class="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded border border-green-200 flex items-center gap-1"><i class="fas fa-check-circle"></i> Accepted</span>`;
-                cardBorder = 'border-green-300 ring-1 ring-green-100 shadow-md';
-            } else if (status === 'rejected') {
-                statusBadge = `<span class="bg-red-100 text-red-700 text-xs font-bold px-2 py-1 rounded border border-red-200 flex items-center gap-1"><i class="fas fa-times-circle"></i> Rejected</span>`;
-                cardBorder = 'border-red-200 bg-red-50/30';
-            } else {
-                statusBadge = `<span class="bg-yellow-100 text-yellow-700 text-xs font-bold px-2 py-1 rounded border border-yellow-200 flex items-center gap-1"><i class="fas fa-clock"></i> Pending</span>`;
-            }
-
-            const hasFile = fileUrl && fileUrl !== "No file uploaded";
-            const fileButton = hasFile
-                ? `<button onclick="openPreview('${fileUrl}')" class="text-blue-600 hover:text-blue-800 text-xs font-bold hover:underline flex items-center gap-1"><i class="fas fa-eye"></i> Preview Doc</button>`
-                : `<span class="text-gray-400 text-xs cursor-not-allowed"><i class="fas fa-times"></i> No Doc</span>`;
-
-            // Control Buttons
-            const debugBtn = `<button onclick='openDebug(${JSON.stringify(JSON.stringify(data))})' class="text-[10px] bg-gray-800 text-white px-2 py-1 rounded hover:bg-black transition flex items-center gap-1"><i class="fas fa-bug"></i> Raw</button>`;
-            const copyBtn = `<button onclick="copyEntryDetails('${id}')" class="text-[10px] bg-indigo-50 text-indigo-600 border border-indigo-200 px-2 py-1 rounded hover:bg-indigo-100 transition flex items-center gap-1"><i class="fas fa-copy"></i> Copy Info</button>`;
-
-            let actionButtons = '';
-            let mailButton = '';
-
-            if (status === 'accepted') {
-                actionButtons = `
-                    <button onclick="revokeDecision('${id}')" class="w-full bg-white border border-gray-300 hover:border-orange-500 hover:text-orange-600 text-gray-600 py-1.5 rounded text-xs font-bold transition">
-                        <i class="fas fa-undo"></i> Change Decision
-                    </button>`;
-                
-                // Copy Acceptance Email Button
-                mailButton = `
-                <div class="flex gap-2">
-                    <a href="mailto:${email || ''}" target="_blank" class="flex-1 bg-green-600 text-white py-2 rounded-lg font-bold text-sm hover:bg-green-700 transition flex items-center justify-center gap-2 shadow-sm">
-                        <i class="fas fa-envelope"></i> Mail
-                    </a>
-                    <button onclick="copyAcceptanceDraft('${id}')" class="flex-1 bg-green-50 text-green-700 border border-green-200 py-2 rounded-lg font-bold text-sm hover:bg-green-100 transition flex items-center justify-center gap-2 shadow-sm" title="Copy Formal Acceptance Letter">
-                        <i class="fas fa-file-signature"></i> Copy Draft
-                    </button>
-                </div>`;
-            } else {
-                actionButtons = `
-                    <div class="flex gap-2">
-                        <button onclick="updateStatus('${id}', 'accepted')" class="flex-1 bg-white border border-gray-300 hover:border-green-500 hover:text-green-600 text-gray-600 py-1.5 rounded text-xs font-bold transition"><i class="fas fa-check"></i> Accept</button>
-                        <button onclick="updateStatus('${id}', 'rejected')" class="flex-1 bg-white border border-gray-300 hover:border-red-500 hover:text-red-600 text-gray-600 py-1.5 rounded text-xs font-bold transition"><i class="fas fa-times"></i> Reject</button>
-                    </div>`;
-                mailButton = `
-                <button disabled class="flex-1 bg-gray-100 text-gray-400 py-2 rounded-lg font-bold text-sm cursor-not-allowed flex items-center justify-center gap-2">
-                    <i class="fas fa-envelope"></i> Mail
-                </button>`;
-            }
-
-            return `
-            <div class="bg-white rounded-xl shadow-sm hover:shadow-lg transition duration-300 border ${cardBorder} flex flex-col h-full relative group">
-                <button onclick="deleteEntry('${id}')" class="absolute top-3 right-3 text-gray-300 hover:text-red-500 transition p-1 z-10">
-                    <i class="fas fa-trash-alt"></i>
-                </button>
-                <div class="p-5 border-b border-gray-100">
-                    <div class="flex justify-between items-start pr-6 mb-2">
-                        <div>
-                            <div class="flex flex-col items-start mb-2">
-                                ${flags}
-                            </div>
-                            <div class="flex flex-wrap items-center gap-y-1 mb-1">
-                                ${idDisplay}
-                                <h3 class="font-bold text-gray-800 text-lg leading-tight">${dispName}</h3>
-                            </div>
-                            <p class="text-xs text-gray-500 font-semibold uppercase tracking-wide mb-2">${dispAffiliation}</p>
-                            <div class="flex gap-2">
-                                ${copyBtn}
-                                ${debugBtn}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mt-2 flex items-center justify-between">
-                        ${statusBadge}
-                        ${fileButton}
-                    </div>
-                </div>
-                <div class="p-5 flex-grow space-y-4">
-                    <div class="grid grid-cols-1 gap-2 text-sm text-gray-600">
-                        <div class="mb-2">
-                            <span class="text-[10px] font-bold text-gray-400 uppercase">Authors</span>
-                            <p class="text-xs text-gray-700 leading-snug">${allAuthors || dispName}</p>
-                        </div>
-                        <div class="flex items-center gap-2 truncate">
-                            <i class="fas fa-envelope text-blue-400 w-5"></i>
-                            <span class="select-all">${email || 'No Email'}</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <i class="fas fa-phone text-blue-400 w-5"></i>
-                            <span class="select-all">${phone || 'No Phone'}</span>
-                        </div>
-                    </div>
-                    <div class="bg-slate-50 rounded-lg p-3 border border-slate-100">
-                         <div class="mb-2">
-                            <span class="text-[10px] font-bold text-gray-400 uppercase">Title</span>
-                            <p class="text-xs font-bold text-gray-800 leading-snug">${dispTitle}</p>
-                        </div>
-                        <div class="relative">
-                            <span class="text-[10px] font-bold text-gray-400 uppercase">Abstract</span>
-                            <div id="abs-${id}" class="text-xs text-gray-600 h-20 overflow-y-auto custom-scrollbar mt-1">
-                                ${dispAbstract}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="p-4 bg-gray-50 border-t border-gray-100 rounded-b-xl space-y-3">
-                    ${actionButtons}
-                    ${mailButton}
-                </div>
-            </div>`;
-        }
-
-        // 5b. Registration Card
-        function createRegistrationCard(id, data, missingCount) {
-            const name = smartFind(data, ['fullName', 'name', 'Name']);
-            const affiliation = smartFind(data, ['affiliation', 'Affiliation']);
-            const designation = smartFind(data, ['designation', 'Designation']);
-            const type = smartFind(data, ['type', 'Type']) || 'Participant';
-            const email = smartFind(data, ['email', 'Email']);
-            const phone = smartFind(data, ['phone', 'Phone']);
-
-            const isPresenter = type === 'Presenter';
-            const badgeColor = isPresenter ? 'bg-indigo-100 text-indigo-700 border-indigo-200' : 'bg-teal-100 text-teal-700 border-teal-200';
-            const icon = isPresenter ? 'fas fa-chalkboard-teacher' : 'fas fa-user-friends';
-
-            let flags = '';
-            if (missingCount > 0) {
-                flags += `<span class="bg-orange-50 text-orange-600 text-[10px] font-bold px-2 py-0.5 rounded border border-orange-200 flex items-center gap-1 mb-2 inline-block"><i class="fas fa-info-circle"></i> Incomplete Data</span>`;
-            }
-
-            const debugBtn = `<button onclick='openDebug(${JSON.stringify(JSON.stringify(data))})' class="mt-2 text-[10px] bg-gray-800 text-white px-2 py-1 rounded hover:bg-black transition"><i class="fas fa-bug"></i> Raw</button>`;
-
-            return `
-            <div class="bg-white rounded-xl shadow-sm hover:shadow-lg transition duration-300 border border-slate-200 flex flex-col h-full relative group">
-                <button onclick="deleteEntry('${id}')" class="absolute top-3 right-3 text-gray-300 hover:text-red-500 transition p-1 z-10">
-                    <i class="fas fa-trash-alt"></i>
-                </button>
-                <div class="p-5 border-b border-gray-100 bg-slate-50/50">
-                    <div class="flex justify-between items-start pr-6">
-                        <div>
-                            ${flags}
-                            <div class="block">
-                                <span class="inline-block ${badgeColor} text-[10px] font-bold px-2 py-0.5 rounded border mb-2 uppercase tracking-wider">
-                                    <i class="${icon} mr-1"></i> ${type}
-                                </span>
-                            </div>
-                            <h3 class="font-bold text-gray-800 text-lg leading-tight mb-1">${name || 'Unknown Name'}</h3>
-                            <p class="text-xs text-gray-500 font-semibold">${designation || 'N/A'} - ${affiliation || 'N/A'}</p>
-                            ${debugBtn}
-                        </div>
-                    </div>
-                </div>
-                <div class="p-5 flex-grow space-y-4">
-                    <div class="space-y-3 text-sm text-gray-600">
-                        <div class="flex items-start gap-3">
-                            <div class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center flex-shrink-0 text-blue-500">
-                                <i class="fas fa-envelope text-xs"></i>
-                            </div>
-                            <div>
-                                <p class="text-[10px] font-bold text-gray-400 uppercase">Email</p>
-                                <p class="font-medium text-gray-800 select-all">${email || 'N/A'}</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start gap-3">
-                            <div class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center flex-shrink-0 text-blue-500">
-                                <i class="fas fa-phone text-xs"></i>
-                            </div>
-                            <div>
-                                <p class="text-[10px] font-bold text-gray-400 uppercase">Phone</p>
-                                <p class="font-medium text-gray-800 select-all">${phone || 'N/A'}</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="px-5 py-3 bg-gray-50 border-t border-gray-100 rounded-b-xl flex justify-between items-center">
-                    <span class="text-[10px] text-gray-400">Registered: ${data.submittedAt ? new Date(data.submittedAt).toLocaleDateString() : 'N/A'}</span>
-                    <a href="mailto:${email}" class="text-xs bg-white border border-gray-200 text-gray-600 px-3 py-1.5 rounded hover:bg-gray-100 transition font-bold">
-                        <i class="fas fa-paper-plane mr-1"></i> Contact
-                    </a>
-                </div>
-            </div>`;
-        }
-
-        // 6. CSV Download (Robust Rewrite)
-        window.downloadCSV = function () {
-            if (globalDataCache.length === 0) {
-                showToast("No data to export", "warning");
-                return;
-            }
-            
-            const safe = (input) => {
-                const str = String(input || "");
-                return `"${str.replace(/"/g, '""')}"`;
-            };
-
-            let csvContent = "";
-
-            if (currentView === 'abstracts') {
-                csvContent += "Abstract ID,Status,Submitter Name,All Authors,Email,Phone,Affiliation,Paper Title,Abstract Text,File URL\n";
-                globalDataCache.forEach(([key, val]) => {
-                    const name = smartFind(val, ['fullName', 'name', 'Name']);
-                    const allAuthors = smartFind(val, ['allAuthors', 'authors', 'Authors']);
-                    const title = smartFind(val, ['paperTitle', 'title', 'Title']);
-                    const abstract = smartFind(val, ['abstractText', 'abstract', 'Abstract']);
-                    const email = smartFind(val, ['email', 'Email']);
-                    const phone = smartFind(val, ['phone', 'Phone']);
-                    const aff = smartFind(val, ['affiliation', 'Affiliation']);
-                    const file = smartFind(val, ['fileDownloadUrl', 'file', 'url']);
-                    const id = smartFind(val, ['abstractId', 'id']) || "N/A";
-                    const status = smartFind(val, ['status', 'Status']) || "pending";
-                    
-                    const cleanAbstract = (abstract || "").replace(/(\r\n|\n|\r)/gm, " ");
-
-                    csvContent += [
-                        safe(id), 
-                        safe(status), 
-                        safe(name), 
-                        safe(allAuthors), 
-                        safe(email), 
-                        safe(phone), 
-                        safe(aff), 
-                        safe(title), 
-                        safe(cleanAbstract), 
-                        safe(file)
-                    ].join(",") + "\n";
-                });
-            } else {
-                csvContent += "Type,Full Name,Email,Phone,Affiliation,Designation\n";
-                globalDataCache.forEach(([key, val]) => {
-                    const name = smartFind(val, ['fullName', 'name', 'Name']);
-                    const type = smartFind(val, ['type', 'Type']);
-                    const email = smartFind(val, ['email', 'Email']);
-                    const phone = smartFind(val, ['phone', 'Phone']);
-                    const aff = smartFind(val, ['affiliation', 'Affiliation']);
-                    const des = smartFind(val, ['designation', 'Designation']);
-                    
-                    csvContent += [
-                        safe(type), 
-                        safe(name), 
-                        safe(email), 
-                        safe(phone), 
-                        safe(aff), 
-                        safe(des)
-                    ].join(",") + "\n";
-                });
-            }
-
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement("a");
-            const url = URL.createObjectURL(blob);
-            
-            const timestamp = new Date().toISOString().slice(0,10);
-            link.setAttribute("href", url);
-            link.setAttribute("download", `${currentView}_export_${timestamp}.csv`);
-            link.style.visibility = 'hidden';
-            
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        // 7. Global Helpers & Debugging
-        window.openPreview = function (url) {
-            document.getElementById('downloadBtn').href = url;
-            document.getElementById('previewModal').classList.remove('hidden');
-            document.getElementById('previewLoader').classList.remove('hidden');
-            const iframe = document.getElementById('docFrame');
-            iframe.src = `https://docs.google.com/gview?url=${encodeURIComponent(url)}&embedded=true`;
-            iframe.onload = () => document.getElementById('previewLoader').classList.add('hidden');
-        }
-
-        window.closePreview = () => {
-            document.getElementById('previewModal').classList.add('hidden');
-            document.getElementById('docFrame').src = "";
-        }
-
-        window.openDebug = (jsonString) => {
-            let data = jsonString;
-            try { if (typeof data === 'string') data = JSON.parse(data); } catch(e){}
-            document.getElementById('debugContent').innerText = JSON.stringify(data, null, 2);
-            document.getElementById('debugModal').classList.remove('hidden');
-        }
-
-        window.closeDebug = () => document.getElementById('debugModal').classList.add('hidden');
-
-        window.revokeDecision = function(id) {
-            if(confirm("Change decision back to pending?")) updateStatus(id, 'pending');
-        }
-
-        window.updateStatus = async function (id, status) {
-            const dbRef = ref(db);
-            let updates = { status: status };
-            if (status === 'accepted') {
-                try {
-                    const snap = await get(child(dbRef, `registrations/${id}`));
-                    const val = snap.val();
-                    if (!val.abstractId) {
-                        const allSnap = await get(child(dbRef, 'registrations'));
-                        let maxId = 100;
-                        if (allSnap.exists()) {
-                            Object.values(allSnap.val()).forEach(item => {
-                                const i = item.abstractId ? parseInt(item.abstractId.replace(/[^0-9]/g, '')) : 0;
-                                if (i > maxId) maxId = i;
-                            });
-                        }
-                        updates.abstractId = `A${maxId + 1}`;
-                    }
-                } catch (e) {}
-            }
-            update(ref(db, 'registrations/' + id), updates).then(() => fetchData());
-        }
-
-        window.deleteEntry = function (id) {
-            if (confirm("Delete this entry?")) {
-                const node = currentView === 'abstracts' ? 'registrations' : 'conference_registrations';
-                remove(ref(db, `${node}/${id}`)).then(() => fetchData());
-            }
-        }
-
-        window.copyAllEmails = function () {
-            if (acceptedEmailsList.length === 0) return showToast("No emails found", "warning");
-            navigator.clipboard.writeText(acceptedEmailsList.join(', ')).then(() => showToast(`Copied ${acceptedEmailsList.length} emails`, "success"));
-        }
-
-        function showToast(msg, type) {
-            let bg = type === "success" ? "#10b981" : type === "error" ? "#ef4444" : "#f59e0b";
-            Toastify({ text: msg, duration: 3000, style: { background: bg, borderRadius: "8px" } }).showToast();
-        }
+        });
     </script>
 </body>
-
 </html>
