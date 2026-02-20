@@ -78,6 +78,7 @@
                     <button onclick="switchPage('main', 'topics')" class="nav-link hover:text-amber-300 px-3 py-2 rounded transition duration-300 relative" data-page="main" data-section="topics">Topics</button>
                     <button onclick="switchPage('main', 'committee')" class="nav-link hover:text-amber-300 px-3 py-2 rounded transition duration-300 relative" data-page="main" data-section="committee">Committee</button>
                     <button onclick="switchPage('program')" class="nav-link hover:text-amber-300 px-3 py-2 rounded transition duration-300 relative" data-page="program">Program</button>
+                    <button onclick="switchPage('instructions')" class="nav-link hover:text-amber-300 px-3 py-2 rounded transition duration-300 relative text-amber-300" data-page="instructions">Instructions</button>
                     <button onclick="switchPage('travel')" class="nav-link hover:text-amber-300 px-3 py-2 rounded transition duration-300 relative" data-page="travel">Travel</button>
                     <button onclick="switchPage('accommodation')" class="nav-link hover:text-amber-300 px-3 py-2 rounded transition duration-300 relative" data-page="accommodation">Accommodation</button>
                     <button onclick="switchPage('main', 'contact')" class="nav-link hover:text-amber-300 px-3 py-2 rounded transition duration-300 relative" data-page="main" data-section="contact">Contact</button>
@@ -102,6 +103,7 @@
 
             <button onclick="switchPage('registration'); toggleMobileMenu()" class="block w-full text-left px-4 py-3 hover:bg-primary border-b border-white/5 font-semibold text-amber-300"><i class="fas fa-user-plus mr-2"></i> Registration</button>
             <button onclick="switchPage('program'); toggleMobileMenu()" class="block w-full text-left px-4 py-3 hover:bg-primary border-b border-white/5 font-semibold text-amber-300"><i class="fas fa-calendar-check mr-2"></i> Program Schedule</button>
+            <button onclick="switchPage('instructions'); toggleMobileMenu()" class="block w-full text-left px-4 py-3 hover:bg-primary border-b border-white/5 font-semibold text-amber-300"><i class="fas fa-chalkboard-teacher mr-2"></i> Instructions</button>
             <button onclick="switchPage('main', 'about'); toggleMobileMenu()" class="block w-full text-left px-4 py-3 hover:bg-primary border-b border-white/5">About</button>
             <button onclick="switchPage('main', 'topics'); toggleMobileMenu()" class="block w-full text-left px-4 py-3 hover:bg-primary border-b border-white/5">Topics</button>
             <button onclick="switchPage('travel'); toggleMobileMenu()" class="block w-full text-left px-4 py-3 hover:bg-primary border-b border-white/5">Travel Guide</button>
@@ -351,6 +353,112 @@
                             <li class="pb-2 border-b border-amber-100">Prof. Satyabrata Patnaik, Jawaharlal Nehru University, New Delhi</li>
                         </ul>
                     </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div id="instructions-page" class="page-content hidden-page flex-grow">
+        <header class="bg-primary text-white py-4 shadow-md sticky top-0 z-50">
+            <div class="container mx-auto px-4 flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-chalkboard-teacher text-secondary text-2xl"></i>
+                    <span class="font-bold text-lg">Presentation Guidelines</span>
+                </div>
+                <button onclick="switchPage('main')" class="text-sm bg-secondary text-white px-4 py-2 rounded-lg font-bold hover:bg-amber-600 transition flex items-center gap-2">
+                    <i class="fas fa-arrow-left"></i> Back to Home
+                </button>
+            </div>
+        </header>
+
+        <section class="py-12 px-4 bg-amber-50 border-b border-amber-200">
+            <div class="container mx-auto max-w-5xl">
+                <div class="text-center mb-10">
+                    <h2 class="text-3xl font-bold text-primary mb-4">Instructions for Participants</h2>
+                    <p class="text-gray-600 mb-6">Please carefully review the guidelines for Poster and Oral presentations below.</p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="bg-white p-8 rounded-xl shadow-lg border-t-4 border-primary">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center text-primary">
+                                <i class="fas fa-microphone text-2xl"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-gray-800">Oral Presentation</h3>
+                        </div>
+                        <div class="bg-surface p-4 rounded-lg border border-amber-100 mb-6">
+                            <p class="text-sm text-gray-700 italic">"Dear Participant, Greetings from the Organizing Committee. We are pleased to inform you that your request for delivering an Oral Presentation at the conference has been accepted."</p>
+                        </div>
+                        <ul class="space-y-4 text-gray-700">
+                            <li class="flex items-start gap-3">
+                                <i class="fas fa-clock text-secondary mt-1"></i>
+                                <span><strong>Total Time Slot:</strong> 10 minutes (8 minutes presentation + 2 minutes discussion/Q&A). Please strictly adhere to the allotted time.</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <i class="fas fa-images text-secondary mt-1"></i>
+                                <span><strong>Recommended slides:</strong> 8-10 slides.</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <i class="fas fa-file-powerpoint text-secondary mt-1"></i>
+                                <span><strong>Presentation format:</strong> PowerPoint (PPT/PPTX).</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <i class="fas fa-usb text-secondary mt-1"></i>
+                                <span>Bring your presentation in a <strong>pen drive</strong> and also keep a backup copy.</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <i class="fas fa-walking text-secondary mt-1"></i>
+                                <span>Presenters are requested to <strong>report to the session hall at least 15 minutes prior</strong> to their scheduled session.</span>
+                            </li>
+                        </ul>
+                        <div class="mt-6 p-4 bg-amber-50 rounded border border-amber-200 text-sm">
+                            <p class="font-bold text-primary mb-1"><i class="fas fa-trophy text-secondary"></i> Awards Note:</p>
+                            <p>Best Oral Presentation Awards will be given based on evaluation by the expert panel.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-8 rounded-xl shadow-lg border-t-4 border-secondary">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center text-secondary">
+                                <i class="fas fa-border-all text-2xl"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-gray-800">Poster Presentation</h3>
+                        </div>
+                        <div class="bg-surface p-4 rounded-lg border border-amber-100 mb-6">
+                            <p class="text-sm text-gray-700 italic">"Dear Participant, Greetings from the Organizing Committee. We are pleased to inform you that your abstract has been selected for Poster Presentation at the conference."</p>
+                        </div>
+                        <ul class="space-y-4 text-gray-700">
+                            <li class="flex items-start gap-3">
+                                <i class="fas fa-ruler-combined text-primary mt-1"></i>
+                                <span><strong>Poster Size:</strong> A0 (Landscape orientation)</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <i class="fas fa-list-ul text-primary mt-1"></i>
+                                <span>The poster should clearly display the <strong>Title, Author(s), Affiliation(s), Introduction, Methodology, Results & Discussion, Conclusion, and Acknowledgement</strong> (if any).</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <i class="fas fa-font text-primary mt-1"></i>
+                                <span>Use clear fonts, readable figures, and proper labeling of graphs and tables.</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <i class="fas fa-thumbtack text-primary mt-1"></i>
+                                <span>Please <strong>mount your poster</strong> at the designated area at least <strong>30 minutes prior</strong> to the poster session.</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <i class="fas fa-user-check text-primary mt-1"></i>
+                                <span>Authors are expected to <strong>be present near their poster</strong> during the assigned evaluation/session time.</span>
+                            </li>
+                        </ul>
+                        <div class="mt-6 p-4 bg-amber-50 rounded border border-amber-200 text-sm">
+                            <p class="font-bold text-primary mb-1"><i class="fas fa-trophy text-secondary"></i> Awards Note:</p>
+                            <p>Best Poster Presentation Awards will be given based on evaluation by the expert panel.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-10">
+                    <p class="text-gray-600 font-semibold">The detailed technical session schedule has been uploaded on the conference website for your reference.</p>
+                    <p class="text-primary font-bold mt-2">We look forward to your valuable scientific contribution!</p>
                 </div>
             </div>
         </section>
@@ -644,11 +752,19 @@
             <div class="container mx-auto max-w-4xl">
                 <div class="bg-white p-8 rounded-xl shadow-md border-t-4 border-secondary">
                     <h2 class="text-2xl font-bold text-primary mb-6">Accommodation Details</h2>
-                    <p class="text-gray-700 leading-relaxed mb-4 text-lg">
+                    
+                    <p class="text-gray-700 leading-relaxed mb-6 text-lg">
                         Limited University Guest House Accommodation will be available to participants coming for oral/ poster presentation as per university charges.
                     </p>
+
+                    <div class="bg-amber-50 border border-amber-200 rounded-lg p-6 mb-6">
+                        <h3 class="text-xl font-bold text-amber-900 mb-3"><i class="fas fa-building text-secondary mr-2"></i> University Hostel Accommodation</h3>
+                        <p class="text-gray-700 mb-2">Accommodation is also available in the University Hostel at a rate of <strong>Rs. 100/- per day</strong> on the basis of <strong>single occupancy</strong>.</p>
+                        <p class="text-gray-700">Those who wish to avail this should send their details including <strong>Name, Travel Schedule, and Registration ID / Paper ID</strong> in the group or to the contact email below.</p>
+                    </div>
+
                     <div class="bg-orange-50 border-l-4 border-orange-500 p-4 mb-6">
-                        <p class="font-bold text-orange-800">Note: It will be booked on the basis of First Come, First Served.</p>
+                        <p class="font-bold text-orange-800">Note: All accommodations will be booked on the basis of First Come, First Served.</p>
                     </div>
                     <div class="flex items-center gap-2 text-gray-700 mt-4">
                         <i class="fas fa-envelope text-primary"></i>
@@ -698,7 +814,7 @@
 
     <script>
         function switchPage(pageId, sectionId = null) {
-            const pages = ['main-page', 'abstract-page', 'travel-page', 'registration-page', 'accommodation-page', 'program-page'];
+            const pages = ['main-page', 'abstract-page', 'travel-page', 'registration-page', 'accommodation-page', 'program-page', 'instructions-page'];
             const targetPage = document.getElementById(pageId + '-page');
 
             if (!targetPage) return;
@@ -760,7 +876,7 @@
 
         window.addEventListener('DOMContentLoaded', () => {
             const hash = window.location.hash.substring(1);
-            const validPages = ['program', 'abstract', 'travel', 'registration', 'accommodation'];
+            const validPages = ['program', 'abstract', 'travel', 'registration', 'accommodation', 'instructions'];
 
             if (validPages.includes(hash)) {
                 switchPage(hash);
