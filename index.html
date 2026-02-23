@@ -78,7 +78,8 @@
                     <button onclick="switchPage('main', 'topics')" class="nav-link hover:text-amber-300 px-3 py-2 rounded transition duration-300 relative" data-page="main" data-section="topics">Topics</button>
                     <button onclick="switchPage('main', 'committee')" class="nav-link hover:text-amber-300 px-3 py-2 rounded transition duration-300 relative" data-page="main" data-section="committee">Committee</button>
                     <button onclick="switchPage('program')" class="nav-link hover:text-amber-300 px-3 py-2 rounded transition duration-300 relative" data-page="program">Program</button>
-                    <button onclick="switchPage('instructions')" class="nav-link hover:text-amber-300 px-3 py-2 rounded transition duration-300 relative text-amber-300" data-page="instructions">Instructions</button>
+                    <button onclick="switchPage('presenters')" class="nav-link hover:text-amber-300 px-3 py-2 rounded transition duration-300 relative text-amber-300 font-bold" data-page="presenters">Presenters</button>
+                    <button onclick="switchPage('instructions')" class="nav-link hover:text-amber-300 px-3 py-2 rounded transition duration-300 relative" data-page="instructions">Instructions</button>
                     <button onclick="switchPage('travel')" class="nav-link hover:text-amber-300 px-3 py-2 rounded transition duration-300 relative" data-page="travel">Travel</button>
                     <button onclick="switchPage('accommodation')" class="nav-link hover:text-amber-300 px-3 py-2 rounded transition duration-300 relative" data-page="accommodation">Accommodation</button>
                     <button onclick="switchPage('main', 'contact')" class="nav-link hover:text-amber-300 px-3 py-2 rounded transition duration-300 relative" data-page="main" data-section="contact">Contact</button>
@@ -103,6 +104,7 @@
 
             <button onclick="switchPage('registration'); toggleMobileMenu()" class="block w-full text-left px-4 py-3 hover:bg-primary border-b border-white/5 font-semibold text-amber-300"><i class="fas fa-user-plus mr-2"></i> Registration</button>
             <button onclick="switchPage('program'); toggleMobileMenu()" class="block w-full text-left px-4 py-3 hover:bg-primary border-b border-white/5 font-semibold text-amber-300"><i class="fas fa-calendar-check mr-2"></i> Program Schedule</button>
+            <button onclick="switchPage('presenters'); toggleMobileMenu()" class="block w-full text-left px-4 py-3 hover:bg-primary border-b border-white/5 font-semibold text-amber-300"><i class="fas fa-users mr-2"></i> Presenters List</button>
             <button onclick="switchPage('instructions'); toggleMobileMenu()" class="block w-full text-left px-4 py-3 hover:bg-primary border-b border-white/5 font-semibold text-amber-300"><i class="fas fa-chalkboard-teacher mr-2"></i> Instructions</button>
             <button onclick="switchPage('main', 'about'); toggleMobileMenu()" class="block w-full text-left px-4 py-3 hover:bg-primary border-b border-white/5">About</button>
             <button onclick="switchPage('main', 'topics'); toggleMobileMenu()" class="block w-full text-left px-4 py-3 hover:bg-primary border-b border-white/5">Topics</button>
@@ -111,6 +113,12 @@
             <button onclick="switchPage('main', 'contact'); toggleMobileMenu()" class="block w-full text-left px-4 py-3 hover:bg-primary">Contact</button>
         </div>
     </nav>
+
+    <div class="bg-gradient-to-r from-red-600 via-yellow-500 to-red-600 shadow-lg cursor-pointer z-40 relative hover:opacity-90 transition-opacity" onclick="switchPage('presenters')">
+        <marquee behavior="scroll" direction="left" scrollamount="12" class="text-white font-extrabold tracking-wide py-2 text-sm md:text-base flex items-center">
+            🎉 NEW UPDATE: The Program Schedule, Oral Presenters, and Poster Presenters lists have been uploaded! Click here to check your name and abstract ID in the new Presenters Tab! 🎉
+        </marquee>
+    </div>
 
     <div id="main-page" class="page-content flex-grow">
 
@@ -153,7 +161,7 @@
                     </a>
                     <div class="flex flex-col items-center group">
                         <img src="https://mkurusa.in/img/rusa-logo1.png" alt="RUSA Logo" class="h-16 md:h-20 w-auto object-contain group-hover:scale-105 transition duration-300">
-                        <span class="text-10px text-gray-500 font-bold mt-2">RUSA 2.0, Centre for Sustainable Habitat</span>
+                        <span class="text-[10px] text-gray-500 font-bold mt-2">RUSA 2.0, Centre for Sustainable Habitat</span>
                     </div>
                 </div>
             </div>
@@ -352,6 +360,149 @@
                             <li class="pb-2 border-b border-amber-100">Prof. Shikha Varma, IOP Bhubaneswar, IUAC, New Delhi</li>
                             <li class="pb-2 border-b border-amber-100">Prof. Satyabrata Patnaik, Jawaharlal Nehru University, New Delhi</li>
                         </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div id="presenters-page" class="page-content hidden-page flex-grow">
+        <header class="bg-primary text-white py-4 shadow-md sticky top-0 z-50">
+            <div class="container mx-auto px-4 flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-users text-secondary text-2xl"></i>
+                    <span class="font-bold text-lg">Presentation Lists</span>
+                </div>
+                <button onclick="switchPage('main')" class="text-sm bg-secondary text-white px-4 py-2 rounded-lg font-bold hover:bg-amber-600 transition flex items-center gap-2">
+                    <i class="fas fa-arrow-left"></i> Back to Home
+                </button>
+            </div>
+        </header>
+
+        <section class="py-12 px-4 bg-stone-50 min-h-screen border-b border-amber-200">
+            <div class="container mx-auto max-w-6xl">
+                <div class="text-center mb-10">
+                    <h2 class="text-3xl font-bold text-primary mb-4">Selected Presenters</h2>
+                    <p class="text-gray-600 mb-2">Find your abstract ID and confirm your scheduled presentation format below.</p>
+                    <div class="w-24 h-1 bg-secondary mx-auto mt-4"></div>
+                </div>
+
+                <div class="flex flex-wrap justify-center mb-8 gap-3 border-b border-gray-200 pb-4">
+                    <button onclick="showPresenterTab('oral')" id="tab-btn-oral" class="px-6 py-2 rounded-full font-bold bg-primary text-white shadow-md transition">Oral Presentations</button>
+                    <button onclick="showPresenterTab('poster1')" id="tab-btn-poster1" class="px-6 py-2 rounded-full font-bold bg-white text-gray-700 hover:bg-gray-100 shadow border border-gray-200 transition">Poster Day 1 (Outside)</button>
+                    <button onclick="showPresenterTab('poster2')" id="tab-btn-poster2" class="px-6 py-2 rounded-full font-bold bg-white text-gray-700 hover:bg-gray-100 shadow border border-gray-200 transition">Poster Day 2 (GNDU)</button>
+                </div>
+
+                <div id="tab-content-oral" class="presenter-tab animate-fade-in">
+                    <div class="bg-white rounded-xl shadow-lg border border-amber-100 overflow-hidden">
+                        <div class="p-4 bg-primary text-white font-bold flex items-center gap-2">
+                            <i class="fas fa-microphone"></i> Oral Presentations List
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm text-left text-gray-700">
+                                <thead class="text-xs text-gray-700 uppercase bg-amber-50">
+                                    <tr>
+                                        <th scope="col" class="px-6 py-3 font-bold border-b border-amber-200 w-24">Abstract ID</th>
+                                        <th scope="col" class="px-6 py-3 font-bold border-b border-amber-200 w-1/4">Submitter Name</th>
+                                        <th scope="col" class="px-6 py-3 font-bold border-b border-amber-200 w-1/4">Affiliation</th>
+                                        <th scope="col" class="px-6 py-3 font-bold border-b border-amber-200">Paper Title</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="border-b hover:bg-gray-50"><td class="px-6 py-4 font-semibold">A104</td><td class="px-6 py-4">MS. Tanuja N M</td><td class="px-6 py-4">Department of Chemistry, Adichunchanagiri University.</td><td class="px-6 py-4">Multifunctional MoS2/GO–chitosan schiff base composite for efficient chromium and copper ion removal from wastewater</td></tr>
+                                    <tr class="border-b hover:bg-gray-50"><td class="px-6 py-4 font-semibold">A105</td><td class="px-6 py-4">Govinakere M. Dhanush</td><td class="px-6 py-4">Department of Biotechnology, Adichunchanagiri University</td><td class="px-6 py-4">SYNERGISTIC ENGINEERING OF THE V2CTX-MXENE@NICUFE-LDH NANOMATERIAL WITH ENHANCED ANTIBACTERIAL AND NANOZYME ACTIVITY</td></tr>
+                                    <tr class="border-b hover:bg-gray-50"><td class="px-6 py-4 font-semibold">A106</td><td class="px-6 py-4">Anusha BR</td><td class="px-6 py-4">ACU-Centre for Research and Innovation, Adichunchanagiri University, Mandya</td><td class="px-6 py-4">Hydrothermal Synthesis of a Novel CuMn2O4/VS2 Composite Anode for Enhanced Lithium-ion battery Performance and Long-Term Structural Stability</td></tr>
+                                    <tr class="border-b hover:bg-gray-50"><td class="px-6 py-4 font-semibold">A107</td><td class="px-6 py-4">Appu S</td><td class="px-6 py-4">ACU-Centre for Research and Innovation, Adichunchanagiri University, Mandya</td><td class="px-6 py-4">Synergistic MgCo2O4/SnO2 Heterostructure as a High-Performance Anode for Long-Life Lithium-Ion Batteries</td></tr>
+                                    <tr class="border-b hover:bg-gray-50"><td class="px-6 py-4 font-semibold">A109</td><td class="px-6 py-4">PRADEEP KUMAR R</td><td class="px-6 py-4">KPR Institute of Engineering and Technology Coimbatore Tamilnadu</td><td class="px-6 py-4">Synthesis,Growth and Characterization of 2-Aminopyridinium Hexafluorosilicate Single Crystals for NLO Applications</td></tr>
+                                    <tr class="border-b hover:bg-gray-50"><td class="px-6 py-4 font-semibold">A114</td><td class="px-6 py-4">sorathiya minal M</td><td class="px-6 py-4">Department of Chemistry, Sardar Patel University, Anand</td><td class="px-6 py-4">A REDOX ACTIVE ORGANIC CATHODE FOR STABILITY OF RECHARGEABLE AQUEOUS ZINC-ION BATTERIES</td></tr>
+                                    <tr class="border-b hover:bg-gray-50"><td class="px-6 py-4 font-semibold">A116</td><td class="px-6 py-4">Swetha K</td><td class="px-6 py-4">Department of Physics, Indian Institute of Technology Ropar</td><td class="px-6 py-4">THEORETICAL STUDIES OF HEXAGONAL BORON NITRIDE FOR QUANTUM TECHNOLGY APPLICATIONS</td></tr>
+                                    <tr class="border-b hover:bg-gray-50"><td class="px-6 py-4 font-semibold">A118</td><td class="px-6 py-4">Dr. Balwinder Kaur</td><td class="px-6 py-4">Govt. Gandhi Memorial Science College, Jammu</td><td class="px-6 py-4">STRUCTURAL, MAGNETIC, OPTICAL, AND ANTIMICROBIAL SYNERGY IN HYDROTHERMALLY SYNTHESIZED MN-SUBSTITUTED NICKLE-ZINC SPINEL FERRITES</td></tr>
+                                    <tr class="border-b hover:bg-gray-50"><td class="px-6 py-4 font-semibold">A122</td><td class="px-6 py-4">Dr. Ajay Singh Dadwal</td><td class="px-6 py-4">Department of Physics. GGM Science College, Jammu</td><td class="px-6 py-4">Spinel Ferrites as a Potential Candidate for Waste Water Treatment and as a Biomedical Material</td></tr>
+                                    <tr class="border-b hover:bg-gray-50"><td class="px-6 py-4 font-semibold">A126</td><td class="px-6 py-4">Dr. Neha Verma</td><td class="px-6 py-4">KRM DAV College, Nakodar</td><td class="px-6 py-4">STRUCTURAL, OPTICAL, SENSING AND PHOTODEGRADING CHARACTERIZATION OF ZINC OXIDE BASED NANOPARTICLES BY USING TRIDOPING AND CO ANNEALING</td></tr>
+                                    <tr class="border-b hover:bg-gray-50"><td class="px-6 py-4 font-semibold">A136</td><td class="px-6 py-4">Mrs. JAGRITI</td><td class="px-6 py-4">Department of applied science, UIET, Kurukshetra University</td><td class="px-6 py-4">THERMAL KINETICS AND THERMODYNAMIC PARAMETERS OF PVC</td></tr>
+                                    <tr class="border-b hover:bg-gray-50"><td class="px-6 py-4 font-semibold">A171</td><td class="px-6 py-4">Himani Gangwar</td><td class="px-6 py-4">Department of Physics, Dr. B. R. Ambedkar NIT Jalandhar</td><td class="px-6 py-4">STUDY OF URANIUM DISTRIBUTION AND HEALTH HAZARDS DUE TO DRINKING GROUND WATER IN JALANDHAR, PUNJAB</td></tr>
+                                    <tr class="border-b hover:bg-gray-50"><td class="px-6 py-4 font-semibold">A175</td><td class="px-6 py-4">Dr. Urvashi Jambukiya</td><td class="px-6 py-4">Department of Physics, Saurashtra University, Rajkot</td><td class="px-6 py-4">INVESTIGATIONS ON STRUCTURAL, MICROSTRUCTURAL, ELECTRICAL AND MAGNETIC PROPERTIES OF Dy0.7Ca0.3MnO3:SiO2</td></tr>
+                                    </tbody>
+                            </table>
+                            <div class="p-4 text-center text-sm text-gray-500 bg-stone-50 border-t border-amber-100">
+                                <i class="fas fa-info-circle mr-1"></i> Missing your abstract ID? Ensure you verify the correct tab or check the attached PDF/CSV for full details.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="tab-content-poster1" class="presenter-tab hidden animate-fade-in">
+                    <div class="bg-white rounded-xl shadow-lg border border-amber-100 overflow-hidden">
+                        <div class="p-4 bg-secondary text-white font-bold flex items-center gap-2">
+                            <i class="fas fa-chalkboard"></i> Poster Day 1 (Outside Participants)
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm text-left text-gray-700">
+                                <thead class="text-xs text-gray-700 uppercase bg-amber-50">
+                                    <tr>
+                                        <th scope="col" class="px-6 py-3 font-bold border-b border-amber-200 w-24">Abstract ID</th>
+                                        <th scope="col" class="px-6 py-3 font-bold border-b border-amber-200 w-1/4">Submitter Name</th>
+                                        <th scope="col" class="px-6 py-3 font-bold border-b border-amber-200 w-1/4">Affiliation</th>
+                                        <th scope="col" class="px-6 py-3 font-bold border-b border-amber-200">Paper Title</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="border-b hover:bg-gray-50"><td class="px-6 py-4 font-semibold">A101</td><td class="px-6 py-4">VIDIT VERMA</td><td class="px-6 py-4">Department of Physics and Astrophysics University of Delhi</td><td class="px-6 py-4">Enhanced Piezoelectric Performance of Green Synthesis of Y-doped-ZnO Nanorod-Based Flexible Piezoelectric Nanogenerator for Portable Electronic and Sensing Application</td></tr>
+                                    <tr class="border-b hover:bg-gray-50"><td class="px-6 py-4 font-semibold">A102</td><td class="px-6 py-4">Ms. Poonam</td><td class="px-6 py-4">Department of Physics and Astrophysics, University of Delhi</td><td class="px-6 py-4">Structural and Electrical properties of novel BZT-BCT modified KNNS lead-free piezoceramics.</td></tr>
+                                    <tr class="border-b hover:bg-gray-50"><td class="px-6 py-4 font-semibold">A103</td><td class="px-6 py-4">Dr. Tony Mathew</td><td class="px-6 py-4">SRM Institute of Science and Technology, Tamil Nadu</td><td class="px-6 py-4">TAILORING THE LATTICE THERMAL CONDUCTIVITY OF Al-INCORPORATED Ag2Se FOR NEAR ROOM TEMPERATURE WASTE HEAT RECOVERY</td></tr>
+                                    <tr class="border-b hover:bg-gray-50"><td class="px-6 py-4 font-semibold">A108</td><td class="px-6 py-4">Dr T Prakash</td><td class="px-6 py-4">University of Madras, Guindy Campus, Chennai</td><td class="px-6 py-4">Low Dose (mGy) Indirect Conversion X-ray Sensors Based on Cs3Cu2I5, CsPbBr3 and CaWO4 coated BPW-34 Photodiodes</td></tr>
+                                    <tr class="border-b hover:bg-gray-50"><td class="px-6 py-4 font-semibold">A110</td><td class="px-6 py-4">Dr. Surinder Singh</td><td class="px-6 py-4">Model Institute of Engineering and Technology, Jammu</td><td class="px-6 py-4">Role of LaCoO₃ Incorporation in Governing Structural, Ferroelectric, and Magnetic Behavior of Na₀.₅Bi₀.₅TiO₃ Ceramics Synthesized by Sol–Gel Method</td></tr>
+                                    <tr class="border-b hover:bg-gray-50"><td class="px-6 py-4 font-semibold">A111</td><td class="px-6 py-4">Mr. Akashkumar Prabhudas Patel</td><td class="px-6 py-4">Charotar University of Science and Technology</td><td class="px-6 py-4">First principle calculations of janus si2ox (x = s, se) monolayers: piezoelectric properties</td></tr>
+                                    <tr class="border-b hover:bg-gray-50"><td class="px-6 py-4 font-semibold">A186</td><td class="px-6 py-4">Vanshita</td><td class="px-6 py-4">Department of Physics and Astronomical Science, Central University of Himachal Pradesh.</td><td class="px-6 py-4">Thermodynamic properties of GaAs Quantum dot in the presence of Disclination.</td></tr>
+                                    <tr class="border-b hover:bg-gray-50"><td class="px-6 py-4 font-semibold">A188</td><td class="px-6 py-4">Samandeep Kaur</td><td class="px-6 py-4">Department of Physics, Akal University</td><td class="px-6 py-4">TUNABLE OPTICAL AND PHOTOCATALYTIC PROPERTIES OF FLOWER-SHAPED CU-DOPED ZNO NANOSTRUCTURES</td></tr>
+                                    <tr class="border-b hover:bg-gray-50"><td class="px-6 py-4 font-semibold">A189</td><td class="px-6 py-4">Ms. Ananya</td><td class="px-6 py-4">Central University of Himachal Pradesh, Dharamshala, H.P.</td><td class="px-6 py-4">Thermoelectric Properties of Semiconducting Epitaxial Graphene on SiC Substrate</td></tr>
+                                    <tr class="border-b hover:bg-gray-50"><td class="px-6 py-4 font-semibold">A193</td><td class="px-6 py-4">Sanyam</td><td class="px-6 py-4">Central University of Himachal Pradesh</td><td class="px-6 py-4">CENTRAL UNIVERSITY OF HIMACHAL PRADESH</td></tr>
+                                    <tr class="border-b hover:bg-gray-50"><td class="px-6 py-4 font-semibold">A200</td><td class="px-6 py-4">Mr. Ratan</td><td class="px-6 py-4">University of Delhi</td><td class="px-6 py-4">ZnMn₂O₄, A BIMETALLIC OXIDE AS ACTIVE ELECTRODE FOR SUPERCAPACITOR APPLICATIONS</td></tr>
+                                    <tr class="border-b hover:bg-gray-50"><td class="px-6 py-4 font-semibold">A203</td><td class="px-6 py-4">Ramandeep kaur</td><td class="px-6 py-4">Department of Physics, Akal University Talwandi Sabo</td><td class="px-6 py-4">PHOTOCATALYTIC DEGRADATION OF ORGANIC POLLUNTANTS USING MIXED-PHASE (2H/3R) WS2 NANOSHEETS UNDER SOLAR IRRIDATION</td></tr>
+                                    <tr class="border-b hover:bg-gray-50"><td class="px-6 py-4 font-semibold">A206</td><td class="px-6 py-4">Dr. Murugadass</td><td class="px-6 py-4">SRMIST, Chennai, Tamil Nadu</td><td class="px-6 py-4">TITANIUM INDUCED MODULATION OF PH...</td></tr>
+                                    </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="tab-content-poster2" class="presenter-tab hidden animate-fade-in">
+                    <div class="bg-white rounded-xl shadow-lg border border-amber-100 overflow-hidden">
+                        <div class="p-4 bg-primary text-white font-bold flex items-center gap-2">
+                            <i class="fas fa-graduation-cap"></i> Poster Day 2 (GNDU Participants)
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm text-left text-gray-700">
+                                <thead class="text-xs text-gray-700 uppercase bg-amber-50">
+                                    <tr>
+                                        <th scope="col" class="px-6 py-3 font-bold border-b border-amber-200 w-24">Abstract ID</th>
+                                        <th scope="col" class="px-6 py-3 font-bold border-b border-amber-200 w-1/4">Submitter Name</th>
+                                        <th scope="col" class="px-6 py-3 font-bold border-b border-amber-200 w-1/4">Affiliation</th>
+                                        <th scope="col" class="px-6 py-3 font-bold border-b border-amber-200">Paper Title</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="border-b hover:bg-gray-50"><td class="px-6 py-4 font-semibold">A113</td><td class="px-6 py-4">Mrs. Garima Sharda</td><td class="px-6 py-4">Department of Physics, GNDU, Amritsar</td><td class="px-6 py-4">Structural Evolution and Magnetic Transition of Zn and Ti co-doped barium hexaferrites</td></tr>
+                                    <tr class="border-b hover:bg-gray-50"><td class="px-6 py-4 font-semibold">A120</td><td class="px-6 py-4">Dr. Nisha Sharma</td><td class="px-6 py-4">Department of Physics, GNDU, Amritsar</td><td class="px-6 py-4">HEALTH RISK ASSESSMENT DUE TO URANIUM IN THE GROUNDWATER OF AMRITSAR, PUNJAB</td></tr>
+                                    <tr class="border-b hover:bg-gray-50"><td class="px-6 py-4 font-semibold">A121</td><td class="px-6 py-4">Dr. Swati Verma</td><td class="px-6 py-4">Department of Physics, GNDU, Amritsar</td><td class="px-6 py-4">Effect Of Zn–Zr Co-doping On The Structural And Magnetic Properties Of BaFe₁₂O₁₉ Hexaferrites For Magnetic Device Applications</td></tr>
+                                    <tr class="border-b hover:bg-gray-50"><td class="px-6 py-4 font-semibold">A123</td><td class="px-6 py-4">Sumit Choudhary</td><td class="px-6 py-4">Department of Physics, GNDU, Amritsar</td><td class="px-6 py-4">QUANTUM COMPUTATIONAL STUDY OF THE Λ-α SYSTEM USING JORDAN WIGNER TRANSFORMATION</td></tr>
+                                    <tr class="border-b hover:bg-gray-50"><td class="px-6 py-4 font-semibold">A125</td><td class="px-6 py-4">Yuvraj Singh</td><td class="px-6 py-4">Department of Physics, GNDU, Amritsar</td><td class="px-6 py-4">INTRODUCTION TO PROPERTIES AND APPLICATIONS OF HEXAFERRITES</td></tr>
+                                    <tr class="border-b hover:bg-gray-50"><td class="px-6 py-4 font-semibold">A127</td><td class="px-6 py-4">Ms. Kajal Dadwal</td><td class="px-6 py-4">Department of Physics, GNDU, Amritsar</td><td class="px-6 py-4">CHEMICALLY STRENGTHENED SODIUM ALUMINO-BOROSILICATE GLASSES</td></tr>
+                                    <tr class="border-b hover:bg-gray-50"><td class="px-6 py-4 font-semibold">A128</td><td class="px-6 py-4">Ms. Kriti</td><td class="px-6 py-4">Department of Physics, GNDU, Amritsar</td><td class="px-6 py-4">ELECTRICAL AND ELECTROCHEMICAL PROPERTIES OF ALKALI COBALTATE CATHODES</td></tr>
+                                    <tr class="border-b hover:bg-gray-50"><td class="px-6 py-4 font-semibold">A129</td><td class="px-6 py-4">Mr. Rohit Kumar Kasaudhan</td><td class="px-6 py-4">Department of Physics, GNDU, Amritsar</td><td class="px-6 py-4">SYNTHESIS AND CHARACTERIZATION OF VANADIUM TELLURITE GLASS CATHODES FOR APPLICATIONS IN ENERGY STORAGE DEVICES</td></tr>
+                                    <tr class="border-b hover:bg-gray-50"><td class="px-6 py-4 font-semibold">A130</td><td class="px-6 py-4">Ms. Arshdeep Kaur</td><td class="px-6 py-4">Department of Physics, GNDU, Amritsar</td><td class="px-6 py-4">Comprehensive Study of Ferroelectric, Magnetic, and Magneto-Electric Properties...</td></tr>
+                                    <tr class="border-b hover:bg-gray-50"><td class="px-6 py-4 font-semibold">A194</td><td class="px-6 py-4">Ms. Priya</td><td class="px-6 py-4">Department of Physics, GNDU, Amritsar</td><td class="px-6 py-4">Defect-Mediated Conduction and Dielectric Behavior in Mg-Substituted PrMgₓFe₁₋ₓO₃ Orthoferrite Ceramics</td></tr>
+                                    <tr class="border-b hover:bg-gray-50"><td class="px-6 py-4 font-semibold">A195</td><td class="px-6 py-4">Mr. Lovish Sharma</td><td class="px-6 py-4">Department of Physics, GNDU, Amritsar</td><td class="px-6 py-4">ATOMIC MODELLING OF TITANIA-MXENE INTERFACIAL LAYER USING ML APROACH</td></tr>
+                                    <tr class="border-b hover:bg-gray-50"><td class="px-6 py-4 font-semibold">A196</td><td class="px-6 py-4">Shiffali Middha</td><td class="px-6 py-4">Department of Physics, GNDU, Amritsar</td><td class="px-6 py-4">Synthesis and Multiferroic Characterization of Flexible PVDF/ Bi(1-x)/2Nd(1-x)/2PbxFe1-xTixO3 (x = 0.4) Composites with Magnetoelectric Coupling</td></tr>
+                                    <tr class="border-b hover:bg-gray-50"><td class="px-6 py-4 font-semibold">A197</td><td class="px-6 py-4">Honeet Kour</td><td class="px-6 py-4">Department of Physics, GNDU, Amritsar</td><td class="px-6 py-4">RECENT ADVANCES IN THIRD-GENERATION SOLAR CELLS FOR SUSTAINABLE ENERGY CONVERSION</td></tr>
+                                    <tr class="border-b hover:bg-gray-50"><td class="px-6 py-4 font-semibold">A198</td><td class="px-6 py-4">Mr. Manjeet Saini</td><td class="px-6 py-4">Department of Physics, GNDU, Amritsar</td><td class="px-6 py-4">ELECTROMAGNETICALLY INDUCED ENHANCEMENT OF CLUSTER RADIOACTIVITY</td></tr>
+                                    <tr class="border-b hover:bg-gray-50"><td class="px-6 py-4 font-semibold">A199</td><td class="px-6 py-4">Abdul Baqi</td><td class="px-6 py-4">Department of Physics, GNDU, Amritsar</td><td class="px-6 py-4">Acoustic Velocity Sensing of Magnetically Induced Damping</td></tr>
+                                    <tr class="border-b hover:bg-gray-50"><td class="px-6 py-4 font-semibold">A201</td><td class="px-6 py-4">Ms. Medha Devgan</td><td class="px-6 py-4">Department of Physics, GNDU, Amritsar</td><td class="px-6 py-4">Optically Tunable Broadband Terahertz Metamaterial Absorber Using Photoconductive Gallium Arsenide</td></tr>
+                                    <tr class="border-b hover:bg-gray-50"><td class="px-6 py-4 font-semibold">A202</td><td class="px-6 py-4">Mr. Abhishek Verma</td><td class="px-6 py-4">Department of Physics, GNDU, Amritsar</td><td class="px-6 py-4">INTERFERENCE-CONTROLLED CROSS KERR EFFECT IN X -TYPE ATOMIC SYSTEM UNDER MICROWAVE EXCITATION</td></tr>
+                                    <tr class="border-b hover:bg-gray-50"><td class="px-6 py-4 font-semibold">A204</td><td class="px-6 py-4">Ms. Prachi</td><td class="px-6 py-4">Department of Physics, GNDU, Amritsar</td><td class="px-6 py-4">Structural Analysis of...</td></tr>
+                                    </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -793,6 +944,7 @@
                     <ul class="space-y-2 text-sm">
                         <li><button onclick="switchPage('main', 'home')" class="hover:text-secondary">Home</button></li>
                         <li><button onclick="switchPage('registration')" class="hover:text-secondary font-bold text-amber-300">Registration</button></li>
+                        <li><button onclick="switchPage('presenters')" class="hover:text-secondary font-bold text-amber-300">Presenters List</button></li>
                         <li><button disabled class="text-gray-500 cursor-not-allowed">Call for Abstract (Closed)</button></li>
                         <li><button onclick="switchPage('main', 'topics')" class="hover:text-secondary">Topics of Interest</button></li>
                         <li><a href="https://online.gndu.ac.in/" target="_blank" class="hover:text-secondary">GNDU Official Website</a></li>
@@ -807,8 +959,9 @@
     </footer>
 
     <script>
+        // Updated to include the new presenters-page
         function switchPage(pageId, sectionId = null) {
-            const pages = ['main-page', 'abstract-page', 'travel-page', 'registration-page', 'accommodation-page', 'program-page', 'instructions-page'];
+            const pages = ['main-page', 'abstract-page', 'travel-page', 'registration-page', 'accommodation-page', 'program-page', 'instructions-page', 'presenters-page'];
             const targetPage = document.getElementById(pageId + '-page');
 
             if (!targetPage) return;
@@ -838,6 +991,27 @@
             } else if (!sectionId) {
                 updateActiveLink('main', 'home');
             }
+        }
+
+        // JS for switching between Presenter types inner tabs
+        function showPresenterTab(tabId) {
+            // Hide all
+            document.querySelectorAll('.presenter-tab').forEach(tab => {
+                tab.classList.add('hidden');
+            });
+            // Reset buttons
+            document.querySelectorAll('[id^="tab-btn-"]').forEach(btn => {
+                btn.classList.remove('bg-primary', 'text-white');
+                btn.classList.add('bg-white', 'text-gray-700');
+            });
+
+            // Show selected
+            document.getElementById('tab-content-' + tabId).classList.remove('hidden');
+            
+            // Highlight button
+            const activeBtn = document.getElementById('tab-btn-' + tabId);
+            activeBtn.classList.remove('bg-white', 'text-gray-700');
+            activeBtn.classList.add('bg-primary', 'text-white');
         }
 
         function toggleMobileMenu() {
@@ -870,7 +1044,8 @@
 
         window.addEventListener('DOMContentLoaded', () => {
             const hash = window.location.hash.substring(1);
-            const validPages = ['program', 'abstract', 'travel', 'registration', 'accommodation', 'instructions'];
+            // Added presenters to validPages
+            const validPages = ['program', 'abstract', 'travel', 'registration', 'accommodation', 'instructions', 'presenters'];
 
             if (validPages.includes(hash)) {
                 switchPage(hash);
